@@ -1,0 +1,15 @@
+{
+  "name": "com.ifelse.timer",
+  "displayName": "Timer",
+  "version": "1.0.3",
+  "unity": "2020.1",
+  "description": "Timer functions + manager for delaying function calls",
+  "documentationUrl": "https://github.com/ryanslikesocool/Timer",
+  "dependencies": { },
+  "author": {
+    "name": "Ryan Boyer",
+    "email": "ryanjboyer@gmail.com",
+    "url": "http://ryanjboyer.com/"
+  },
+  "type": "library"
+}
