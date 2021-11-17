@@ -15,9 +15,7 @@ public partial class Timer : MonoBehaviour {
         }
     }
 
-    private void OnDestroy() {
-        instance = null;
-    }
+    private void OnDisable() => instance = null;
 
     private static void CreateTimer() => instance = new GameObject("Timer").AddComponent<Timer>();
 
