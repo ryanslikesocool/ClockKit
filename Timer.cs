@@ -15,8 +15,7 @@ public partial class Timer : MonoBehaviour {
         }
     }
 
-    private void OnApplicationQuit() {
-        Destroy(gameObject);
+    private void OnDestroy() {
         instance = null;
     }
 
