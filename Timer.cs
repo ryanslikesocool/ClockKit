@@ -8,7 +8,7 @@ public partial class Timer : MonoBehaviour {
     private static Timer instance = null;
     private static Timer Shared {
         get {
-            if (!(instance ?? false)) {
+            if (!(instance ?? false) && Application.isPlaying) {
                 CreateTimer();
             }
             return instance;
@@ -27,7 +27,7 @@ public partial class Timer : MonoBehaviour {
     /// <param name="timer">The timer coroutine to stop.</param>
     public static void Stop(Coroutine timer) {
         if (timer != null) {
-            Shared.StopCoroutine(timer);
+            Shared?.StopCoroutine(timer);
         }
     }
 
@@ -54,7 +54,7 @@ public partial class Timer : MonoBehaviour {
     /// <param name="action">The action to do when the timer is up.</param>
     /// <returns>Coroutine instance in case stopping is needed.</returns>
     public static Coroutine Delay(float wait, bool unscaledTime, Action action) {
-        return Shared.StartCoroutine(Wait());
+        return Shared?.StartCoroutine(Wait());
 
         IEnumerator Wait() {
             if (unscaledTime) {
@@ -74,7 +74,7 @@ public partial class Timer : MonoBehaviour {
     /// <param name="action">The action to do when the timer is up.</param>
     /// <returns>Coroutine instance in case stopping is needed.</returns>
     public static Coroutine Delay(float wait, Func<float> delta, Action action) {
-        return Shared.StartCoroutine(Wait());
+        return Shared?.StartCoroutine(Wait());
 
         IEnumerator Wait() {
             float time = 0;
