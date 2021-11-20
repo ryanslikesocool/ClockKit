@@ -142,7 +142,7 @@ namespace Timer {
 
             IEnumerator Wait() {
                 Timer.Shared.activeTimers++;
-                while (condition) {
+                while (condition()) {
                     yield return null;
                 }
                 action();
