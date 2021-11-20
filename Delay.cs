@@ -19,7 +19,7 @@ namespace Timer {
         private void OnDestroy() => instance = null;
 
         /// <summary>
-        /// Stops a timer coroutine if it's running.  The coroutine must have been started with one of the [Delay.For] methods.
+        /// Stops a timer coroutine if it's running.  The coroutine must have been started with one of the [Delay] methods.
         /// </summary>
         /// <param name="timer">The timer coroutine to stop.</param>
         public static void Stop(Coroutine timer) {
@@ -33,24 +33,24 @@ namespace Timer {
         /// <summary>
         /// Waits until the next frame, then calls the [action].
         /// </summary>
-        /// <param name="action">The action to do when the timer is up.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine Frame(Action action, int repeat = 1) => For(yieldInstruction: null, action, repeat);
 
         /// <summary>
         /// Waits for [wait] seconds, in scaled game time, then calls the [action].
         /// </summary>
-        /// <param name="wait">The seconds to wait for.</param>
-        /// <param name="action">The action to do when the timer is up.</param>
+        /// <param name="wait">The seconds to [wait] for.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(float wait, Action action, int repeat = 1) => For(new WaitForSeconds(wait), action, repeat);
 
         /// <summary>
         /// Waits for [wait] seconds, in optionally unscaled time, then calls the [action].
         /// </summary>
-        /// <param name="wait">The seconds in optionally [unscaledTime] to wait for.</param>
+        /// <param name="wait">The seconds in optionally [unscaledTime] to [wait] for.</param>
         /// <param name="unscaledTime">Determines if unscaled or scaled game time is used.</param>
-        /// <param name="action">The action to do when the timer is up.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(float wait, bool unscaledTime, Action action, int repeat = 1) {
             return Shared.StartCoroutine(Wait());
@@ -72,9 +72,9 @@ namespace Timer {
         /// <summary>
         /// Waits for [wait] value, increasing the timer by [delta] every frame, then calls the [action].
         /// </summary>
-        /// <param name="wait">The value to wait for.</param>
+        /// <param name="wait">The value to [wait] for.</param>
         /// <param name="delta">The update rate to increase the timer by every frame.</param>
-        /// <param name="action">The action to do when the timer is up.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(float wait, Func<float> delta, Action action, int repeat = 1) {
             return Shared.StartCoroutine(Wait());
@@ -97,7 +97,7 @@ namespace Timer {
         /// Waits for [customYieldInstruction] to complete, then calls the [action].
         /// </summary>
         /// <param name="customYieldInstruction">The CustomYieldInstruction to wait for.</param>
-        /// <param name="action">The action to do when the timer is up.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(CustomYieldInstruction customYieldInstruction, Action action, int repeat = 1) {
             return Shared.StartCoroutine(Wait());
@@ -116,7 +116,7 @@ namespace Timer {
         /// Waits for [yieldInstruction] to complete, then calls the [action].
         /// </summary>
         /// <param name="yieldInstruction">The YieldInstruction to wait for.</param>
-        /// <param name="action">The action to do when the timer is up.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(YieldInstruction yieldInstruction, Action action, int repeat = 1) {
             return Shared.StartCoroutine(Wait());
@@ -127,6 +127,25 @@ namespace Timer {
                     yield return yieldInstruction;
                     action();
                 }
+                Timer.Shared.activeTimers--;
+            }
+        }
+
+        /// <summary>
+        /// Waits while the [condition] is true.  Once the [condition] is false, the [action] is called.
+        /// </summary>
+        /// <param name="condition">The [condition] to wait for.</param>
+        /// <param name="action">The [action] to do when the condition is false.</param>
+        /// <returns>Coroutine instance in case stopping is needed.</returns>
+        public static Coroutine While(Func<bool> condition, Action action) {
+            return Shared.StartCoroutine(Wait());
+
+            IEnumerator Wait() {
+                Timer.Shared.activeTimers++;
+                while (condition) {
+                    yield return null;
+                }
+                action();
                 Timer.Shared.activeTimers--;
             }
         }
