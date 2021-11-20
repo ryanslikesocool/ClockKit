@@ -1,6 +1,6 @@
 {
     "name": "Timer",
-    "rootNamespace": "",
+    "rootNamespace": "Timer",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
