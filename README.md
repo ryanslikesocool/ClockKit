@@ -46,6 +46,13 @@ Coroutine timer = Timer.Delay.For(1f, () => 0.2f, () => {
 
 // And now I'll stop the timer.  This acts like cancelling the timer before it can call the lambda function.
 Timer.Delay.Stop(timer);
+
+bool condition = true;
+Timer.Delay.For(1f, () => condition = false);
+Timer.Delay.While(() => condition, () => {
+	// I'll be called once the condition is false.
+	// Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
+});
 ```
 
 ### Custom Yields
@@ -99,6 +106,6 @@ bool condition = true;
 Timer.Delay.For(1f, () => condition = false);
 Timer.Update.While(() => condition, () => {
 	// I'll be called every frame until the condition is false.
-	// Since I'm controlling the condition with Timer.Delay, the condition will be false in 1 second.
+	// Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
 });
 ```
