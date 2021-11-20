@@ -14,7 +14,7 @@ Open with the desired Unity project\
 Import into the Plugins folder
 
 ## Usage
-Timer will automatically create a game object and attach scripts to handle coroutine calls the first time it's needed in a scene.\
+Timer will automatically create a game object and attach scripts to handle coroutine calls the first time it's needed in a scene.
 
 ## Timer.Delay
 `Timer.Delay` has static methods to start coroutines to act as delays.\
@@ -50,8 +50,8 @@ Timer.Delay.Stop(timer);
 bool condition = true;
 Timer.Delay.For(1f, () => condition = false);
 Timer.Delay.While(() => condition, () => {
-	// I'll be called once the condition is false.
-	// Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
+  // I'll be called once the condition is false.
+  // Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
 });
 ```
 
@@ -74,21 +74,21 @@ Timer.Delay(customYieldInstruction: new WaitForGameSeconds(3), () => {
 
 ## Timer.Update
 `Timer.Update` will call the same action over a period of time, which is useful for code-based animations.\
-Like `Timer.Delay`, all `Timer.Update` methods (besides `Stop`) return a `Coroutine`, which can be ignored, or stored for later to stop the timer if desired.
+Like `Timer.Delay`, all `Timer.Update` methods (besides `Stop`) return a `Coroutine`, which can be ignored, or stored for later to stop the timer if desired.\
 All `Timer.Update` methods (besides `Stop`) have a final, optional `Action` parameter that calls the method once when the timer is up.
 
 ```cs
 Timer.Update.For(1f, time => {
-	// Every frame, over the span of 1 second, the percent will be printed to the log.
-	float percent = time / 1f;
-	Debug.Log($"Timer percent is at {percent}");
+  // Every frame, over the span of 1 second, the percent will be printed to the log.
+  float percent = time / 1f;
+  Debug.Log($"Timer percent is at {percent}");
 });
 
 bool unscaled = true;
 Timer.Update.For(1f, unscaled, time => {
-	// Every frame, over the span of 1 second of *unscaled* time, the percent will be printed to the log.
-	float percent = time / 1f;
-	Debug.Log($"Timer percent is at {percent}");
+  // Every frame, over the span of 1 second of *unscaled* time, the percent will be printed to the log.
+  float percent = time / 1f;
+  Debug.Log($"Timer percent is at {percent}");
 });
 
 // Notice how the timer coroutine is stored here for later.
@@ -105,7 +105,7 @@ Timer.Update.Stop(timer);
 bool condition = true;
 Timer.Delay.For(1f, () => condition = false);
 Timer.Update.While(() => condition, () => {
-	// I'll be called every frame until the condition is false.
-	// Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
+  // I'll be called every frame until the condition is false.
+  // Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
 });
 ```
