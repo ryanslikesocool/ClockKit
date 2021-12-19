@@ -27,6 +27,10 @@ Timer.Delay.Frame(() => {
   // I'll be called during the next frame.
 });
 
+Timer.Delay.Frame(5, () => {
+  // I'll be called in 5 frames.
+});
+
 Timer.Delay.For(1f, () => {
   // I'll be called after 1 second.
 });
