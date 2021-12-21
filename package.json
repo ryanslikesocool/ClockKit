@@ -1,7 +1,8 @@
 {
   "name": "com.developedwithlove.timer",
   "displayName": "Timer",
-  "version": "1.2.0",
+  "version": "1.2.1",
+  "unity": "2020.3",
   "description": "Timer functions + manager for delaying function calls",
   "documentationUrl": "https://github.com/ryanslikesocool/Timer",
   "author": {

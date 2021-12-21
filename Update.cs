@@ -17,7 +17,7 @@ namespace Timer {
         }
 
         private void OnDestroy() => instance = null;
-        
+
         /// <summary>
         /// Stops a timer coroutine if it's running.  The coroutine must have been started with one of the [Update.For] or [Update.While] methods.
         /// </summary>

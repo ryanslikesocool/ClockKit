@@ -1,4 +1,4 @@
-// Developed with love by Ryan Boyer http://ryanjboyer.com <3
+// Developed With Love by Ryan Boyer http://ryanjboyer.com <3
 
 using UnityEngine;
 #if ODIN_INSPECTOR_3
@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 #endif
 
 namespace Timer {
-    internal class Timer : MonoBehaviour {
+    public class Timer : MonoBehaviour {
         private static Timer instance = null;
         public static Timer Shared {
             get {
