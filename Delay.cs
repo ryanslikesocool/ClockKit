@@ -130,6 +130,15 @@ namespace Timer {
         }
 
         /// <summary>
+        /// Waits for [customYieldInstruction] to complete [count] times, then calls the [action], repeated [repeat] times.
+        /// </summary>
+        /// <param name="customYieldInstruction">The CustomYieldInstruction to wait for.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
+        /// <param name="repeat">The number of times to [repeat] the timer.</param>
+        /// <returns>Coroutine instance in case stopping is needed.</returns>
+        public static Coroutine For(CustomYieldInstruction customYieldInstruction, Action action, int repeat = 1) => For(customYieldInstruction, 1, action, repeat);
+
+        /// <summary>
         /// Waits for [yieldInstruction] to complete, then calls the [action].
         /// </summary>
         /// <param name="yieldInstruction">The YieldInstruction to wait for.</param>
@@ -151,6 +160,15 @@ namespace Timer {
                 Timer.Shared.activeTimers--;
             }
         }
+
+        /// <summary>
+        /// Waits for [yieldInstruction] to complete, then calls the [action].
+        /// </summary>
+        /// <param name="yieldInstruction">The YieldInstruction to wait for.</param>
+        /// <param name="action">The [action] to do when the timer is up.</param>
+        /// <param name="repeat">The number of times to [repeat] the timer.</param>
+        /// <returns>Coroutine instance in case stopping is needed.</returns>
+        public static Coroutine For(YieldInstruction yieldInstruction, Action action, int repeat = 1) => For(yieldInstruction, 1, action, repeat);
 
         /// <summary>
         /// Waits while the [condition] is true.  Once the [condition] is false, the [action] is called.
