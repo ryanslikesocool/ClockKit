@@ -45,7 +45,7 @@ namespace Timer {
         /// <param name="action">The [action] to do when the timer is up.</param>
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
-        public static Coroutine Frame(int count, Action action, int repeat = 1) => For(yieldInstruction: null, 1, action, repeat);
+        public static Coroutine Frame(int count, Action action, int repeat = 1) => For(yieldInstruction: null, count, action, repeat);
 
         /// <summary>
         /// Waits for [wait] seconds, in scaled game time, then calls the [action].
@@ -130,7 +130,7 @@ namespace Timer {
         }
 
         /// <summary>
-        /// Waits for [customYieldInstruction] to complete [count] times, then calls the [action], repeated [repeat] times.
+        /// Waits for [customYieldInstruction] to complete, then calls the [action], repeated [repeat] times.
         /// </summary>
         /// <param name="customYieldInstruction">The CustomYieldInstruction to wait for.</param>
         /// <param name="action">The [action] to do when the timer is up.</param>
