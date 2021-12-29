@@ -30,7 +30,7 @@ namespace Timer {
         /// <param name="action">The [action] to do when the timer is up.</param>
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
-        public static Coroutine For(float wait, Action action, int repeat = 1) => For(new WaitForSeconds(wait), 1, action, repeat);
+        public static Coroutine For(float wait, Action action, int repeat = 1) => For(wait, false, action, repeat);
 
         /// <summary>
         /// Waits for [wait] seconds, in optionally unscaled time, then calls the [action].
@@ -106,7 +106,7 @@ namespace Timer {
         /// <param name="action">The [action] to do when the timer is up.</param>
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
-        public static Coroutine For(CustomYieldInstruction customYieldInstruction, Action action, int repeat = 1) => For(customYieldInstruction, 1, action, repeat);
+        public static Coroutine For(CustomYieldInstruction customYieldInstruction, Action action, int repeat = 1) => For(customYieldInstruction: customYieldInstruction, 1, action, repeat);
 
         /// <summary>
         /// Waits for [yieldInstruction] to complete, then calls the [action].
@@ -136,7 +136,7 @@ namespace Timer {
         /// <param name="action">The [action] to do when the timer is up.</param>
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
-        public static Coroutine For(YieldInstruction yieldInstruction, Action action, int repeat = 1) => For(yieldInstruction, 1, action, repeat);
+        public static Coroutine For(YieldInstruction yieldInstruction, Action action, int repeat = 1) => For(yieldInstruction: yieldInstruction, 1, action, repeat);
 
         /// <summary>
         /// Waits while the [condition] is true.  Once the [condition] is false, the [action] is called.

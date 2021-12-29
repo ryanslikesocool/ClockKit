@@ -11,6 +11,8 @@ namespace Timer {
         private static Timer instance = null;
         public static Timer Shared {
             get {
+                if (!Application.isPlaying) { return null; }
+
                 if (!(instance ?? false)) {
                     Create();
                 }
@@ -20,13 +22,6 @@ namespace Timer {
 
         private void OnDisable() => Destroy(gameObject);
         private void OnApplicationQuit() => Destroy(gameObject);
-
-        public static T Create<T>() where T : MonoBehaviour {
-            if (!Shared.gameObject.TryGetComponent<T>(out T component)) {
-                return Shared.gameObject.AddComponent<T>();
-            }
-            return component;
-        }
 
         private static void Create() {
             if (Application.isPlaying) {
