@@ -1,5 +1,6 @@
 // Developed With Love by Ryan Boyer http://ryanjboyer.com <3
 
+using System.Collections;
 using UnityEngine;
 #if ODIN_INSPECTOR_3
 using Sirenix.OdinInspector;
@@ -17,12 +18,6 @@ namespace Timer {
             }
         }
 
-#if ODIN_INSPECTOR_3
-        [ReadOnly] public uint activeTimers = 0;
-#else
-        [HideInInspector] public uint activeTimers = 0;
-#endif
-
         private void OnDisable() => Destroy(gameObject);
         private void OnApplicationQuit() => Destroy(gameObject);
 
@@ -36,6 +31,15 @@ namespace Timer {
         private static void Create() {
             if (Application.isPlaying) {
                 instance = new GameObject("Timer").AddComponent<Timer>();
+            }
+        }
+
+        public static Coroutine Start(IEnumerator routine) => Shared.StartCoroutine(routine);
+
+        public static void Stop(Coroutine coroutine) {
+            if (coroutine != null) {
+                Shared.StopCoroutine(coroutine);
+                coroutine = null;
             }
         }
     }

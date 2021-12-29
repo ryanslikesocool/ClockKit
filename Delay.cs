@@ -5,38 +5,14 @@ using System.Collections;
 using UnityEngine;
 
 namespace Timer {
-    public class Delay : MonoBehaviour {
-        private static Delay instance = null;
-        private static Delay Shared {
-            get {
-                if (!(instance ?? false)) {
-                    instance = Timer.Create<Delay>();
-                }
-                return instance;
-            }
-        }
-
-        private void OnDestroy() => instance = null;
-
-        /// <summary>
-        /// Stops a timer coroutine if it's running.  The coroutine must have been started with one of the [Delay] methods.
-        /// </summary>
-        /// <param name="timer">The timer coroutine to stop.</param>
-        public static void Stop(Coroutine timer) {
-            if (timer != null) {
-                Shared.StopCoroutine(timer);
-                timer = null;
-                Timer.Shared.activeTimers--;
-            }
-        }
-
+    public static class Delay {
         /// <summary>
         /// Waits until the next frame, then calls the [action].
         /// </summary>
         /// <param name="action">The [action] to do when the timer is up.</param>
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
-        public static Coroutine Frame(Action action, int repeat = 1) => For(yieldInstruction: null, 1, action, repeat);
+        public static Coroutine Frame(Action action, int repeat = 1) => Frame(1, action, repeat);
 
         /// <summary>
         /// Waits for [count] frames, then calls the [action].
@@ -65,10 +41,9 @@ namespace Timer {
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(float wait, bool unscaledTime, Action action, int repeat = 1) {
-            return Shared.StartCoroutine(Wait());
+            return Timer.Start(Wait());
 
             IEnumerator Wait() {
-                Timer.Shared.activeTimers++;
                 for (int i = 0; i < repeat; i++) {
                     if (unscaledTime) {
                         yield return new WaitForSecondsRealtime(wait);
@@ -77,7 +52,6 @@ namespace Timer {
                     }
                     action();
                 }
-                Timer.Shared.activeTimers--;
             }
         }
 
@@ -90,10 +64,9 @@ namespace Timer {
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(float wait, Func<float> delta, Action action, int repeat = 1) {
-            return Shared.StartCoroutine(Wait());
+            return Timer.Start(Wait());
 
             IEnumerator Wait() {
-                Timer.Shared.activeTimers++;
                 for (int i = 0; i < repeat; i++) {
                     float time = 0;
                     while (time < wait) {
@@ -102,7 +75,6 @@ namespace Timer {
                     }
                 }
                 action();
-                Timer.Shared.activeTimers--;
             }
         }
 
@@ -115,17 +87,15 @@ namespace Timer {
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(CustomYieldInstruction customYieldInstruction, int count, Action action, int repeat = 1) {
-            return Shared.StartCoroutine(Wait());
+            return Timer.Start(Wait());
 
             IEnumerator Wait() {
-                Timer.Shared.activeTimers++;
                 for (int i = 0; i < repeat; i++) {
                     for (int j = 0; j < count; j++) {
                         yield return customYieldInstruction;
                     }
                     action();
                 }
-                Timer.Shared.activeTimers--;
             }
         }
 
@@ -147,17 +117,15 @@ namespace Timer {
         /// <param name="repeat">The number of times to [repeat] the timer.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine For(YieldInstruction yieldInstruction, int count, Action action, int repeat = 1) {
-            return Shared.StartCoroutine(Wait());
+            return Timer.Start(Wait());
 
             IEnumerator Wait() {
-                Timer.Shared.activeTimers++;
                 for (int i = 0; i < repeat; i++) {
                     for (int j = 0; j < count; i++) {
                         yield return yieldInstruction;
                     }
                     action();
                 }
-                Timer.Shared.activeTimers--;
             }
         }
 
@@ -177,15 +145,13 @@ namespace Timer {
         /// <param name="action">The [action] to do when the condition is false.</param>
         /// <returns>Coroutine instance in case stopping is needed.</returns>
         public static Coroutine While(Func<bool> condition, Action action) {
-            return Shared.StartCoroutine(Wait());
+            return Timer.Start(Wait());
 
             IEnumerator Wait() {
-                Timer.Shared.activeTimers++;
                 while (condition()) {
                     yield return null;
                 }
                 action();
-                Timer.Shared.activeTimers--;
             }
         }
     }
