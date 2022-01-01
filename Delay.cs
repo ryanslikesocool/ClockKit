@@ -121,7 +121,7 @@ namespace Timer {
 
             IEnumerator Wait() {
                 for (int i = 0; i < repeat; i++) {
-                    for (int j = 0; j < count; i++) {
+                    for (int j = 0; j < count; j++) {
                         yield return yieldInstruction;
                     }
                     action();
