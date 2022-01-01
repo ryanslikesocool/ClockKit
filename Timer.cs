@@ -1,10 +1,9 @@
 // Developed With Love by Ryan Boyer http://ryanjboyer.com <3
 
+#define DWL_TIMER
+
 using System.Collections;
 using UnityEngine;
-#if ODIN_INSPECTOR_3
-using Sirenix.OdinInspector;
-#endif
 
 namespace Timer {
     public class Timer : MonoBehaviour {
