@@ -48,7 +48,6 @@ namespace Timer {
             float time = 0;
             while (time < duration) {
                 time += deltaTime();
-                time = Mathf.Clamp01(time);
                 action(time);
                 yield return null;
             }
