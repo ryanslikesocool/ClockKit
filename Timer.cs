@@ -3,6 +3,7 @@
 #define DWL_TIMER
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Timer {
@@ -34,6 +35,14 @@ namespace Timer {
             if (coroutine != null) {
                 Shared.StopCoroutine(coroutine);
                 coroutine = null;
+            }
+        }
+
+        public static void Stop(ICollection<Coroutine> coroutines) {
+            foreach (Coroutine coroutine in coroutines) {
+                if (coroutine != null) {
+                    Shared.StopCoroutine(coroutine);
+                }
             }
         }
     }
