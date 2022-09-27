@@ -2,16 +2,14 @@
 Timer functions to delay calls for Unity
 
 ## Installation
-**RECOMMENDED INSTALLATION**\
-Add via the Unity Package Manager\
-"Add package from git URL..."\
-`https://github.com/ryanslikesocool/Timer.git`\
-Add
+**Recommended Installation** (Unity Package Manager)\
+- "Add package from git URL..."
+- `https://github.com/ryanslikesocool/Timer.git`
 
-**Not-so Recommended Installation**\
-Get the latest [release](https://github.com/ryanslikesocool/Timer/releases)\
-Open with the desired Unity project\
-Import into the Plugins folder
+**Alternate Installation**\
+- Get the latest [release](https://github.com/ryanslikesocool/Timer/releases)
+- Open with the desired Unity project
+- Import into the Plugins folder
 
 ## Usage
 Timer will automatically create a game object and attach scripts to handle coroutine calls the first time it's needed in a scene.
