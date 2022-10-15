@@ -24,14 +24,15 @@ namespace Timer {
         private static void Create() {
             if (Application.isPlaying) {
                 instance = new GameObject("Timer").AddComponent<Timer>();
+                instance.gameObject.hideFlags = HideFlags.HideInHierarchy | HideFlags.DontSaveInEditor;
             }
         }
 
-        public static Coroutine Start(IEnumerator routine) => Shared.StartCoroutine(routine);
+        public static Coroutine Start(IEnumerator routine) => Shared?.StartCoroutine(routine);
 
         public static void Stop(Coroutine coroutine) {
             if (coroutine != null) {
-                Shared.StopCoroutine(coroutine);
+                Shared?.StopCoroutine(coroutine);
                 coroutine = null;
             }
         }
@@ -39,7 +40,7 @@ namespace Timer {
         public static void Stop(ICollection<Coroutine> coroutines) {
             foreach (Coroutine coroutine in coroutines) {
                 if (coroutine != null) {
-                    Shared.StopCoroutine(coroutine);
+                    Shared?.StopCoroutine(coroutine);
                 }
             }
         }
