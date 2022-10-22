@@ -1,4 +1,4 @@
-// Developed with love by Ryan Boyer http://ryanjboyer.com <3
+// Developed With Love by Ryan Boyer http://ryanjboyer.com <3
 
 using System;
 using System.Collections;
@@ -47,19 +47,19 @@ namespace Timer {
         private static IEnumerator DoFor(float duration, Func<float> deltaTime, Action<float> action, Action done) {
             float time = 0;
             while (time < duration) {
+                action?.Invoke(time);
                 time += deltaTime();
-                action(time);
                 yield return null;
             }
-            if (done != null) { done(); }
+            done?.Invoke();
         }
 
         private static IEnumerator DoWhile(Func<bool> condition, Action action, Action done) {
             while (condition()) {
-                action();
+                action?.Invoke();
                 yield return null;
             }
-            if (done != null) { done(); }
+            done?.Invoke();
         }
     }
 }
