@@ -1,4 +1,4 @@
-// Developed with love by Ryan Boyer http://ryanjboyer.com <3
+// Developed With Love by Ryan Boyer http://ryanjboyer.com <3
 
 using System;
 using System.Collections;
@@ -50,7 +50,7 @@ namespace Timer {
                     } else {
                         yield return new WaitForSeconds(wait);
                     }
-                    action();
+                    action?.Invoke();
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace Timer {
                         yield return null;
                     }
                 }
-                action();
+                action?.Invoke();
             }
         }
 
@@ -124,7 +124,7 @@ namespace Timer {
                     for (int j = 0; j < count; j++) {
                         yield return yieldInstruction;
                     }
-                    action();
+                    action?.Invoke();
                 }
             }
         }
@@ -151,7 +151,7 @@ namespace Timer {
                 while (condition()) {
                     yield return null;
                 }
-                action();
+                action?.Invoke();
             }
         }
     }
