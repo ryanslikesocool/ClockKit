@@ -16,33 +16,34 @@ Timer will automatically create a game object and attach scripts to handle corou
 
 ## Timer.Timer
 `Timer.Timer` is created automatically as a MonoBehaviour attached to a hidden GameObject.\
-It handles all coroutines invoked from a `Timer.Delay` or `Timer.Update` function, and is only created once one of these is called.\
-It provides three static functions.
+It handles all coroutines invoked from a `Timer.Delay` or `Timer.Update` function as well as `Sequence.Execute()`, and is only created once when it's first needed.\
+`Timer.Timer` provides three static functions.
 ```cs
 // Start any coroutine and attach it to the timer object.
-Timer.Timer.Start(IEnumerator);
+IEnumerator someIEnumerator;
+Timer.Timer.Start(someIEnumerator);
 
 // Stop a couroutine that has been started from the Timer object.
 // All coroutines in this package can be stopped with this function.
-Timer.Timer.Stop(Coroutine);
+Coroutine someCoroutine;
+Timer.Timer.Stop(someCoroutine);
 
 // Stops all coroutines in a collection.
-Timer.Timer.Stop(ICollection<Coroutine>);
+ICollection<Coroutine> someCoroutineCollection;
+Timer.Timer.Stop(someCoroutineCollection);
 ```
-Coroutines stopped through the Timer class are done so in a safe manner.  If the couroutine is null, it will "fail" silently.
-
-An alternative to `Timer.Timer.Stop` is provided for quicker coding.
+An alternative to `Timer.Timer.Stop` is also provided.
 ```cs
 Coroutine someCoroutine = Timer.Delay.Frame(() => { /* ... */ });
 someCoroutine.Stop();
 ```
+Coroutines stopped through the Timer class are done so in a safe manner.  If the couroutine is null, it will "fail" silently.
+
 
 ## Timer.Delay
 `Timer.Delay` has static methods to start coroutines to act as delays.\
 All `Timer.Delay` methods return a `Coroutine`, which can be ignored, or stored for later to stop the timer if desired.\
 All `Timer.Delay` methods also include a final, optional `int` parameter for repeating timers a set number of times.
-
-### Basic Usage
 ```cs
 Timer.Delay.Frame(() => {
   // I'll be called during the next frame.
@@ -69,8 +70,8 @@ Coroutine timer = Timer.Delay.For(1f, () => 0.2f, () => {
   // 1f / 0.2f -> 5.
 });
 
-// And now I'll stop the timer.  This acts like cancelling the timer before it can call the lambda function.
-Timer.Delay.Stop(timer);
+// And now I'll stop the timer.  This cancels the timer before it can call the lambda function.
+Timer.Timer.Stop(timer);
 
 bool condition = true;
 Timer.Delay.For(1f, () => condition = false);
