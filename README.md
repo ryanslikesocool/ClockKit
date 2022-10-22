@@ -1,5 +1,5 @@
 # Timer
-Timer functions to delay calls for Unity
+Timer functions for Unity
 
 ## Installation
 **Recommended Installation** (Unity Package Manager)\
