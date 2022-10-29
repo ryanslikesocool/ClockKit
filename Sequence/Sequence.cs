@@ -30,14 +30,24 @@ namespace Timer {
 
         public Coroutine Execute() => Timer.Start(_Execute());
 
-        // MARK: - Objects
+        // MARK: - Utility
 
         public Sequence Wait(float seconds, bool unscaledTime = false) {
             AnySequenceObject obj = new SequenceObjectWaitSeconds(seconds, unscaledTime);
             return Append(obj);
         }
 
-        // MARK: Delay
+        public Sequence Invoke(Action action) {
+            AnySequenceObject obj = new SequenceObjectInvoke(action);
+            return Append(obj);
+        }
+
+        public Sequence Coroutine(Func<Coroutine> action) {
+            AnySequenceObject obj = new SequenceObjectCoroutine(action);
+            return Append(obj);
+        }
+
+        // MARK: - Delay
 
         public Sequence DelaySeconds(float seconds, Action action, bool unscaledTime = false) {
             AnySequenceObject obj = new SequenceObjectDelaySeconds(seconds, action, unscaledTime);
@@ -69,7 +79,7 @@ namespace Timer {
             return Append(obj);
         }
 
-        // MARK: Update
+        // MARK: - Update
 
         public Sequence UpdateSeconds(float seconds, Action<float> action, bool unscaledTime = false) {
             AnySequenceObject obj = new SequenceObjectUpdateSeconds(seconds, action, null, unscaledTime);
@@ -85,6 +95,5 @@ namespace Timer {
             AnySequenceObject obj = new SequenceObjectUpdateFrames(frames, action, done);
             return Append(obj);
         }
-
     }
 }

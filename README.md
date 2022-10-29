@@ -147,9 +147,6 @@ Timer.Sequence sequence = Timer.Sequence.Create();
 // Add a delay to the sequence, calling the lambda when complete.
 sequence.DelaySeconds(1f, () => Debug.Log("I have waited one second."));
 
-// Add a half second wait to the end of the sequence.  This will delay the next item in the sequence.
-sequence.Wait(0.5f);
-
 // Add an update to the end of the sequence.  Every frame, it will print out the current update time.
 sequence.UpdateSeconds(2f, t => {
    // Count up to 2.0f
@@ -162,7 +159,6 @@ Coroutine coroutine = sequence.Execute();
 // Sequence items are executed in the order they were added.  The example above would look like this:
 // Wait 1 second
 // Print "I have waited one second."
-// Wait 0.5 seconds
 // Print "Current update time: 0"
 // Print "Current update time: 0.016"
 // Print "Current update time: 0.033"
@@ -173,7 +169,6 @@ Sequences can also be created without separating calls.  The example below would
 ```cs
 Coroutine coroutine = Timer.Sequence.Create()
   .DelaySeconds(1f, () => Debug.Log("I have waited one second."))
-  .Wait(0.5f)
   .UpdateSeconds(2f, t => Debug.Log($"Current update time: {t}"))
   .Execute();
 ```
@@ -182,6 +177,34 @@ And, just like `Timer.Delay` and `Timer.Update` functions, Sequences can be stop
 Timer.Timer.Stop(coroutine);
 // or
 coroutine.Stop();
+```
+
+### Special Functions
+Three "special" functions are provided.  These cover other common use cases that the other standard functions may not.
+```cs
+Sequence sequence = Timer.Sequence.Create();
+
+// Wait waits for the provided seconds without invoking any functions.
+sequence.Wait(0.5f);
+
+// Invoke will invoke the provided Action as soon as the sequence reaches it.
+sequence.Invoke(MyAction);
+
+void MyAction() {
+    // Do work
+}
+
+// Coroutine accepts a coroutine input.  The sequence will wait until the coroutine is complete before continuing.
+sequence.Coroutine(() => MyCoroutine);
+
+IEnumerator MyCoroutine() {
+    // Do coroutine work
+    yield return null;
+}
+
+// -----
+
+sequence.Execute();
 ```
 
 ### Custom Sequence Objects
