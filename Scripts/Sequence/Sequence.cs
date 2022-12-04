@@ -32,68 +32,38 @@ namespace Timer {
 
         // MARK: - Utility
 
-        public Sequence Wait(float seconds, bool unscaledTime = false) {
-            AnySequenceObject obj = new SequenceObjectWaitSeconds(seconds, unscaledTime);
-            return Append(obj);
-        }
+        public Sequence Invoke(Action action) => Append(new SequenceObjectInvoke(action));
 
-        public Sequence Invoke(Action action) {
-            AnySequenceObject obj = new SequenceObjectInvoke(action);
-            return Append(obj);
-        }
+        public Sequence Coroutine(Func<Coroutine> action) => Append(new SequenceObjectCoroutine(action));
 
-        public Sequence Coroutine(Func<Coroutine> action) {
-            AnySequenceObject obj = new SequenceObjectCoroutine(action);
-            return Append(obj);
-        }
+        // MARK: - Wait
+
+        public Sequence Wait(float seconds, bool unscaledTime = false) => Append(new SequenceObjectWaitSeconds(seconds, unscaledTime));
+
+        public Sequence WaitFrames(int frames) => Append(new SequenceObjectWaitFrames(frames));
+
+        public Sequence WaitWhile(Func<bool> condition) => Append(new SequenceObjectWaitWhile(condition));
 
         // MARK: - Delay
 
-        public Sequence DelaySeconds(float seconds, Action action, bool unscaledTime = false) {
-            AnySequenceObject obj = new SequenceObjectDelaySeconds(seconds, action, unscaledTime);
-            return Append(obj);
-        }
+        public Sequence DelaySeconds(float seconds, Action action, bool unscaledTime = false) => Append(new SequenceObjectDelaySeconds(seconds, action, unscaledTime));
 
-        public Sequence DelayFrame(Action action) {
-            AnySequenceObject obj = new SequenceObjectDelayFrame(1, action);
-            return Append(obj);
-        }
+        public Sequence DelayFrame(Action action) => Append(new SequenceObjectDelayFrame(1, action));
 
-        public Sequence DelayFrames(int frames, Action action) {
-            AnySequenceObject obj = new SequenceObjectDelayFrame(frames, action);
-            return Append(obj);
-        }
+        public Sequence DelayFrames(int frames, Action action) => Append(new SequenceObjectDelayFrame(frames, action));
 
-        public Sequence DelayCustomYieldInstruction(CustomYieldInstruction customYieldInstruction, Action action) {
-            AnySequenceObject obj = new SequenceObjectDelayCustomYieldInstruction(customYieldInstruction, action);
-            return Append(obj);
-        }
+        public Sequence DelayCustomYieldInstruction(CustomYieldInstruction customYieldInstruction, Action action) => Append(new SequenceObjectDelayCustomYieldInstruction(customYieldInstruction, action));
 
-        public Sequence DelayYieldInstruction(YieldInstruction yieldInstruction, Action action) {
-            AnySequenceObject obj = new SequenceObjectDelayYieldInstruction(yieldInstruction, action);
-            return Append(obj);
-        }
+        public Sequence DelayYieldInstruction(YieldInstruction yieldInstruction, Action action) => Append(new SequenceObjectDelayYieldInstruction(yieldInstruction, action));
 
-        public Sequence DelayWhile(Func<bool> condition, Action action) {
-            AnySequenceObject obj = new SequenceObjectDelayWhile(condition, action);
-            return Append(obj);
-        }
+        public Sequence DelayWhile(Func<bool> condition, Action action) => Append(new SequenceObjectDelayWhile(condition, action));
 
         // MARK: - Update
 
-        public Sequence UpdateSeconds(float seconds, Action<float> action, bool unscaledTime = false) {
-            AnySequenceObject obj = new SequenceObjectUpdateSeconds(seconds, action, null, unscaledTime);
-            return Append(obj);
-        }
+        public Sequence UpdateSeconds(float seconds, Action<float> action, bool unscaledTime = false) => Append(new SequenceObjectUpdateSeconds(seconds, action, null, unscaledTime));
 
-        public Sequence UpdateSeconds(float seconds, Action<float> action, Action done, bool unscaledTime = false) {
-            AnySequenceObject obj = new SequenceObjectUpdateSeconds(seconds, action, done, unscaledTime);
-            return Append(obj);
-        }
+        public Sequence UpdateSeconds(float seconds, Action<float> action, Action done, bool unscaledTime = false) => Append(new SequenceObjectUpdateSeconds(seconds, action, done, unscaledTime));
 
-        public Sequence UpdateFrames(int frames, Action<int> action, Action done = null) {
-            AnySequenceObject obj = new SequenceObjectUpdateFrames(frames, action, done);
-            return Append(obj);
-        }
+        public Sequence UpdateFrames(int frames, Action<int> action, Action done = null) => Append(new SequenceObjectUpdateFrames(frames, action, done));
     }
 }
