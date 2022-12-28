@@ -2,11 +2,11 @@
 Timer functions for Unity
 
 ## Installation
-**Recommended Installation** (Unity Package Manager)\
+**Recommended Installation** (Unity Package Manager)
 - "Add package from git URL..."
 - `https://github.com/ryanslikesocool/Timer.git`
 
-**Alternate Installation**\
+**Alternate Installation**
 - Get the latest [release](https://github.com/ryanslikesocool/Timer/releases)
 - Open with the desired Unity project
 - Import into the Plugins folder
