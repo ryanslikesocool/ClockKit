@@ -1,69 +1,70 @@
-# Timer
+# ClockKit
 Timer functions for Unity
 
 ## Installation
 **Recommended Installation** (Unity Package Manager)
 - "Add package from git URL..."
-- `https://github.com/ryanslikesocool/Timer.git`
+- `https://github.com/ryanslikesocool/ClockKit.git`
 
 **Alternate Installation**
-- Get the latest [release](https://github.com/ryanslikesocool/Timer/releases)
+- Get the latest [release](https://github.com/ryanslikesocool/ClockKit/releases)
 - Open with the desired Unity project
 - Import into the Plugins folder
 
 ## Usage
-Timer will automatically create a game object and attach scripts to handle coroutine calls the first time it's needed in a scene.
+ClockKit will automatically create a game object and attach scripts to handle coroutine calls the first time it's needed in a scene.
+Note: unlike most libraries, ClockKit is _not_ meant to be imported into a script with `using ClockKit;`.  Instead, function calls are meant to be chained.
 
-## Timer.Timer
-`Timer.Timer` is created automatically as a MonoBehaviour attached to a hidden GameObject.\
-It handles all coroutines invoked from a `Timer.Delay` or `Timer.Update` function as well as `Sequence.Execute()`, and is only created once when it's first needed.\
-`Timer.Timer` provides three static functions.
+## ClockKit.Controller
+`ClockKit.Controller` is created automatically as a MonoBehaviour attached to a hidden GameObject.\
+It handles all coroutines invoked from a `ClockKit.Delay` or `ClockKit.Update` function as well as `Sequence.Execute()`, and is only created once when it's first needed.\
+`ClockKit.Controller` provides three static functions.
 ```cs
 // Start any coroutine and attach it to the timer object.
 IEnumerator someIEnumerator;
-Timer.Timer.Start(someIEnumerator);
+ClockKit.Controller.Start(someIEnumerator);
 
 // Stop a couroutine that has been started from the Timer object.
 // All coroutines in this package can be stopped with this function.
 Coroutine someCoroutine;
-Timer.Timer.Stop(someCoroutine);
+ClockKit.Controller.Stop(someCoroutine);
 
 // Stops all coroutines in a collection.
 ICollection<Coroutine> someCoroutineCollection;
-Timer.Timer.Stop(someCoroutineCollection);
+ClockKit.Controller.Stop(someCoroutineCollection);
 ```
-An alternative to `Timer.Timer.Stop` is also provided.
+An alternative to `ClockKit.Controller.Stop` is also provided.
 ```cs
-Coroutine someCoroutine = Timer.Delay.Frame(() => { /* ... */ });
+Coroutine someCoroutine = ClockKit.Delay.Frame(() => { /* ... */ });
 someCoroutine.Stop();
 ```
 Coroutines stopped through the Timer class are done so in a safe manner.  If the couroutine is null, it will "fail" silently.
 
 
-## Timer.Delay
-`Timer.Delay` has static methods to start coroutines to act as delays.\
-All `Timer.Delay` methods return a `Coroutine`, which can be ignored, or stored for later to stop the timer if desired.\
-All `Timer.Delay` methods also include a final, optional `int` parameter for repeating timers a set number of times.
+## ClockKit.Delay
+`ClockKit.Delay` has static methods to start coroutines to act as delays.\
+All `ClockKit.Delay` methods return a `Coroutine`, which can be ignored, or stored for later to stop the timer if desired.\
+All `ClockKit.Delay` methods also include a final, optional `int` parameter for repeating timers a set number of times.
 ```cs
-Timer.Delay.Frame(() => {
+ClockKit.Delay.Frame(() => {
   // I'll be called during the next frame.
 });
 
-Timer.Delay.Frame(5, () => {
+ClockKit.Delay.Frame(5, () => {
   // I'll be called in 5 frames.
 });
 
-Timer.Delay.For(1f, () => {
+ClockKit.Delay.For(1f, () => {
   // I'll be called after 1 second.
 });
 
 bool unscaled = true;
-Timer.Delay.For(1f, unscaled, () => {
+ClockKit.Delay.For(1f, unscaled, () => {
   // I'll be called after 1 second of *unscaled* time.
 });
 
 // Notice how the timer coroutine is stored here for later.
-Coroutine timer = Timer.Delay.For(1f, () => 0.2f, () => {
+Coroutine timer = ClockKit.Delay.For(1f, () => 0.2f, () => {
   // I'll be called in 5 frames.
   // The first parameter (1f) is the duration.
   // The second parameter (0.2f) is the update rate.
@@ -71,11 +72,11 @@ Coroutine timer = Timer.Delay.For(1f, () => 0.2f, () => {
 });
 
 // And now I'll stop the timer.  This cancels the timer before it can call the lambda function.
-Timer.Timer.Stop(timer);
+ClockKit.Controller.Stop(timer);
 
 bool condition = true;
-Timer.Delay.For(1f, () => condition = false);
-Timer.Delay.While(() => condition, () => {
+ClockKit.Delay.For(1f, () => condition = false);
+ClockKit.Delay.While(() => condition, () => {
   // I'll be called once the condition is false.
   // Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
 });
@@ -98,27 +99,27 @@ Timer.Delay(customYieldInstruction: new WaitForGameSeconds(3), () => {
 });
 ```
 
-## Timer.Update
-`Timer.Update` will call the same action over a period of time, which is useful for code-based animations.\
-Like `Timer.Delay`, all `Timer.Update` methods return a `Coroutine`, which can be ignored, or stored for later to stop the timer if desired.\
-All `Timer.Update` methods have a final, optional `Action` parameter that calls the method once when the timer is up.
+## ClockKit.Update
+`ClockKit.Update` will call the same action over a period of time, which is useful for code-based animations.\
+Like `ClockKit.Delay`, all `ClockKit.Update` methods return a `Coroutine`, which can be ignored, or stored for later to stop the timer if desired.\
+All `ClockKit.Update` methods have a final, optional `Action` parameter that calls the method once when the timer is up.
 
 ```cs
-Timer.Update.For(1f, time => {
+ClockKit.Update.For(1f, time => {
   // Every frame, over the span of 1 second, the percent will be printed to the log.
   float percent = time / 1f;
   Debug.Log($"Timer percent is at {percent}");
 });
 
 bool unscaled = true;
-Timer.Update.For(1f, unscaled, time => {
+ClockKit.Update.For(1f, unscaled, time => {
   // Every frame, over the span of 1 second of *unscaled* time, the percent will be printed to the log.
   float percent = time / 1f;
   Debug.Log($"Timer percent is at {percent}");
 });
 
 // Notice how the timer coroutine is stored here for later.
-Coroutine timer = Timer.Update.For(1f, () => 0.2f, time => {
+Coroutine timer = ClockKit.Update.For(1f, () => 0.2f, time => {
   // I'll be called every frame for 5 frames.
   // The first parameter (1f) is the duration.
   // The second parameter (0.2f) is the update rate.
@@ -126,23 +127,23 @@ Coroutine timer = Timer.Update.For(1f, () => 0.2f, time => {
 });
 
 // And now I'll stop the timer.
-Timer.Timer.Stop(timer);
+ClockKit.Controller.Stop(timer);
 
 bool condition = true;
-Timer.Delay.For(1f, () => condition = false);
-Timer.Update.While(() => condition, () => {
+ClockKit.Delay.For(1f, () => condition = false);
+ClockKit.Update.While(() => condition, () => {
   // I'll be called every frame until the condition is false.
-  // Since the condition is controlled with Timer.Delay, the condition will be false in 1 second.
+  // Since the condition is controlled with ClockKit.Delay, the condition will be false in 1 second.
 });
 ```
 
-## Timer.Sequence
-`Timer.Sequence` provides an easy way to chain timers without creating a "pyramid of doom" with nested lambda functions.\
+## ClockKit.Sequence
+`ClockKit.Sequence` provides an easy way to chain timers without creating a "pyramid of doom" with nested lambda functions.\
  Most other `Delay` and `Update` functions are provided as options, and behave in the same way as their un-sequenced counterparts.\
  A `Wait` function is available to force the sequence to wait without any lambdas.
 ```cs
-// Call Timer.Sequence.Create() to create a new sequence.
-Timer.Sequence sequence = Timer.Sequence.Create();
+// Call ClockKit.Sequence.Create() to create a new sequence.
+ClockKit.Sequence sequence = ClockKit.Sequence.Create();
 
 // Add a delay to the sequence, calling the lambda when complete.
 sequence.DelaySeconds(1f, () => Debug.Log("I have waited one second."));
@@ -167,14 +168,14 @@ Coroutine coroutine = sequence.Execute();
 ```
 Sequences can also be created without separating calls.  The example below would produce the same result as the example above
 ```cs
-Coroutine coroutine = Timer.Sequence.Create()
+Coroutine coroutine = ClockKit.Sequence.Create()
   .DelaySeconds(1f, () => Debug.Log("I have waited one second."))
   .UpdateSeconds(2f, t => Debug.Log($"Current update time: {t}"))
   .Execute();
 ```
-And, just like `Timer.Delay` and `Timer.Update` functions, Sequences can be stopped.
+And, just like `ClockKit.Delay` and `ClockKit.Update` functions, Sequences can be stopped.
 ```cs
-Timer.Timer.Stop(coroutine);
+ClockKit.Controller.Stop(coroutine);
 // or
 coroutine.Stop();
 ```
@@ -182,7 +183,7 @@ coroutine.Stop();
 ### Special Functions
 Three "special" functions are provided.  These cover other common use cases that the other standard functions may not.
 ```cs
-Sequence sequence = Timer.Sequence.Create();
+Sequence sequence = ClockKit.Sequence.Create();
 
 // Wait waits for the provided seconds without invoking any functions.
 sequence.Wait(0.5f);
@@ -216,7 +217,7 @@ public class CustomSequenceItem: AnySequenceObject {
   }
 }
 
-Timer.Sequence sequence = Timer.Sequence.Create();
+ClockKit.Sequence sequence = ClockKit.Sequence.Create();
 sequence.Append(new CustomSequenceItem());
 sequence.Execute();
 ```

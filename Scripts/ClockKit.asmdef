@@ -1,7 +1,10 @@
 {
-    "name": "Timer",
-    "rootNamespace": "Timer",
-    "references": [],
+    "name": "ClockKit",
+    "rootNamespace": "ClockKit",
+    "references": [
+        "GUID:d9366e63b425d409b97e07a533ec79d9",
+        "GUID:d8b63aba1907145bea998dd612889d6b"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
