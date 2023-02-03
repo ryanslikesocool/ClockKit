@@ -1,5 +1,9 @@
 using System;
+#if UNITY_MATHEMATICS
 using Unity.Mathematics;
+#else
+using UnityEngine;
+#endif
 
 namespace ClockKit {
     public struct AnimationUpdatingTimer<Value, Animation> : IFixedDurationTimer where Animation : IFixedDurationAnimation<Value> {
@@ -31,7 +35,11 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
+#if UNITY_MATHEMATICS
             float percent = math.saturate(localTime / Duration);
+#else
+            float percent = Mathf.Clamp(percent, 0f, 1f);
+#endif
             Value value = animation.Evaluate(percent);
 
             onUpdate(value);

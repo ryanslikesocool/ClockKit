@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace ClockKit {
     public interface ITimer {
         bool IsComplete { get; }

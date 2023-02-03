@@ -1,50 +1,14 @@
-using System.Collections.Generic;
 using Foundation;
 using UnityEngine;
 
 namespace ClockKit {
-    public sealed class Clock : Singleton<Clock> {
+    public static partial class Clock {
         public delegate void UpdateCallback(in Information information);
-
-        // MARK: - Properties
-
-        private Dictionary<Queue, UpdateQueue> queues = default;
-
-        // MARK: - Lifecycle
-
-        protected override void Awake() {
-            base.Awake();
-
-            float time = Time.time;
-            queues = new Dictionary<Queue, UpdateQueue> {
-                { Queue.Update, new UpdateQueue(Queue.Update, time) },
-                { Queue.FixedUpdate, new UpdateQueue(Queue.FixedUpdate, time) },
-                { Queue.LateUpdate, new UpdateQueue(Queue.LateUpdate, time) },
-            };
-        }
-
-        protected override void OnApplicationQuit() {
-            base.OnApplicationQuit();
-        }
-
-        // MARK: - Update
-
-        private void Update() {
-            queues[Queue.Update].Update(Time.time);
-        }
-
-        private void FixedUpdate() {
-            queues[Queue.FixedUpdate].Update(Time.time);
-        }
-
-        private void LateUpdate() {
-            queues[Queue.LateUpdate].Update(Time.time);
-        }
 
         // MARK: - Add Delegate
 
         public static UUID AddDelegate(Queue queue, in UUID key, int priority, UpdateCallback callback)
-            => Shared.queues[queue].AddDelegate(key, priority, callback);
+            => ClockController.Shared.queues[queue].AddDelegate(key, priority, callback);
 
         public static UUID AddDelegate(in UUID key, int priority, UpdateCallback callback)
             => AddDelegate(Queue.Default, key, priority, callback);
@@ -73,7 +37,7 @@ namespace ClockKit {
             if (!key.TryGetValue(out UUID _key)) {
                 return false;
             }
-            return Shared.queues[queue].RemoveDelegate(_key);
+            return ClockController.Shared.queues[queue].RemoveDelegate(_key);
         }
 
         public static bool RemoveDelegate(UUID? key) {
@@ -82,7 +46,7 @@ namespace ClockKit {
             }
 
             bool result = false;
-            foreach (Queue queue in Shared.queues.Keys) {
+            foreach (Queue queue in ClockController.Shared.queues.Keys) {
                 result |= RemoveDelegate(queue, _key);
             }
             return result;
@@ -91,7 +55,7 @@ namespace ClockKit {
         // MARK: - Start Timer
 
         public static UUID StartTimer(Queue queue, in UUID key, ITimer timer)
-            => Shared.queues[queue].StartTimer(key, timer);
+            => ClockController.Shared.queues[queue].StartTimer(key, timer);
 
         public static UUID StartTimer(in UUID key, ITimer timer)
             => StartTimer(Queue.Default, key, timer);
@@ -108,7 +72,7 @@ namespace ClockKit {
             if (!key.TryGetValue(out UUID _key)) {
                 return false;
             }
-            return Shared.queues[queue].StopTimer(_key);
+            return ClockController.Shared.queues[queue].StopTimer(_key);
         }
 
         public static bool StopTimer(in UUID? key) {
@@ -117,13 +81,13 @@ namespace ClockKit {
             }
 
             bool result = false;
-            foreach (Queue queue in Shared.queues.Keys) {
+            foreach (Queue queue in ClockController.Shared.queues.Keys) {
                 result |= StopTimer(queue, _key);
             }
             return result;
         }
 
-        // MARK: - Start Timer (Extra)
+        // MARK: - Start Timer (Convenience)
 
         // MARK: Update Until
         public static UUID Update(Queue queue, in UUID key, IndefiniteUpdatingTimer.CompletionPredicate until, IndefiniteUpdatingTimer.UpdateCallback onUpdate, IndefiniteUpdatingTimer.CompletionCallback onComplete = null) {
