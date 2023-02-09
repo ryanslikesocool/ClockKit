@@ -1,0 +1,29 @@
+{
+    "name": "ClockKit",
+    "rootNamespace": "ClockKit",
+    "references": [
+        "GUID:d9366e63b425d409b97e07a533ec79d9",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:b6bac09b148bc4667b2c9c134059747c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.mathematics",
+            "expression": "1.2.4",
+            "define": "UNITY_MATHEMATICS"
+        },
+        {
+            "name": "com.developedwithlove.easekit",
+            "expression": "3.0.0",
+            "define": "EASEKIT_3"
+        }
+    ],
+    "noEngineReferences": false
+}
