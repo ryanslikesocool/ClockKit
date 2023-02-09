@@ -30,7 +30,7 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
-            onUpdate(localTime);
+            onUpdate?.Invoke(localTime);
 
             IsComplete = completionPredicate(localTime);
             if (IsComplete) {

@@ -1,3 +1,4 @@
+using System;
 using Foundation;
 using UnityEngine;
 
@@ -75,6 +76,9 @@ namespace ClockKit {
             return ClockController.Shared.queues[queue].StopTimer(_key);
         }
 
+        public static bool[] StopTimers(Queue queue, in UUID?[] keys)
+            => keys.Map(key => StopTimer(key));
+
         public static bool StopTimer(in UUID? key) {
             if (!key.TryGetValue(out UUID _key)) {
                 return false;
@@ -86,6 +90,9 @@ namespace ClockKit {
             }
             return result;
         }
+
+        public static bool[] StopTimers(in UUID?[] keys)
+            => keys.Map(key => StopTimer(key));
 
         // MARK: - Start Timer (Convenience)
 
@@ -186,5 +193,24 @@ namespace ClockKit {
 
         public static UUID Animate<Value, Animation>(Animation animation, AnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate, AnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null) where Animation : IFixedDurationAnimation<Value>
             => Animate(Queue.Default, UUID.Create(), animation, onUpdate, onComplete);
+
+        // MARK: Sequence
+        public static UUID Sequence(Queue queue, in UUID key, Func<ITimer>[] timerBuilders, SequenceTimer.CompletionCallback onComplete = null) {
+            ITimer timer = new SequenceTimer(
+                startTime: Time.time,
+                timerBuilders: timerBuilders,
+                onComplete: onComplete
+            );
+            return StartTimer(queue, key, timer);
+        }
+
+        public static UUID Sequence(in UUID key, Func<ITimer>[] timerBuilders, SequenceTimer.CompletionCallback onComplete = null)
+            => Sequence(Queue.Default, key, timerBuilders, onComplete);
+
+        public static UUID Sequence(Queue queue, Func<ITimer>[] timerBuilders, SequenceTimer.CompletionCallback onComplete = null)
+            => Sequence(queue, UUID.Create(), timerBuilders, onComplete);
+
+        public static UUID Sequence(Func<ITimer>[] timerBuilders, SequenceTimer.CompletionCallback onComplete = null)
+            => Sequence(Queue.Default, UUID.Create(), timerBuilders, onComplete);
     }
 }

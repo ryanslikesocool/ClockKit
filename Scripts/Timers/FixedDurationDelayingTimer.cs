@@ -27,7 +27,7 @@ namespace ClockKit {
 
             IsComplete = localTime >= Duration;
             if (IsComplete) {
-                onComplete();
+                onComplete?.Invoke();
             }
             return IsComplete;
         }

@@ -28,7 +28,7 @@ namespace ClockKit {
 
             IsComplete = completionPredicate(localTime);
             if (IsComplete) {
-                onComplete(localTime);
+                onComplete?.Invoke(localTime);
             }
             return IsComplete;
         }
