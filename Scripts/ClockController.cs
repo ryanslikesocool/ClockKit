@@ -19,10 +19,14 @@ namespace ClockKit {
                 { Queue.FixedUpdate, new UpdateQueue(Queue.FixedUpdate, time) },
                 { Queue.LateUpdate, new UpdateQueue(Queue.LateUpdate, time) },
             };
+
+            gameObject.hideFlags = HideFlags.HideAndDontSave;
+            DontDestroyOnLoad(gameObject);
         }
 
         protected override void OnApplicationQuit() {
             base.OnApplicationQuit();
+            Destroy(gameObject);
         }
 
         // MARK: - Update
