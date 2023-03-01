@@ -19,7 +19,7 @@ namespace ClockKit {
             IsComplete = false;
         }
 
-        public bool Update(in Information information) {
+        public bool OnUpdate(in ClockInformation information) {
             if (IsComplete) {
                 return true;
             }

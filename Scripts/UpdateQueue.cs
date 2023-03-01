@@ -46,7 +46,7 @@ namespace ClockKit {
                 return;
             }
 
-            Information information = new Information(
+            ClockInformation information = new ClockInformation(
                 queue: Queue,
                 time: time,
                 deltaTime: deltaTime,
@@ -63,7 +63,7 @@ namespace ClockKit {
                 UUID[] timerKeys = timers.Keys.ToArray();
                 foreach (UUID key in timerKeys) {
                     if (timers.ContainsKey(key)) {
-                        bool isComplete = timers[key].Update(information);
+                        bool isComplete = timers[key].OnUpdate(information);
                         if (isComplete) {
                             StopTimer(key);
                         }

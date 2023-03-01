@@ -24,12 +24,12 @@ namespace ClockKit {
             this.IsComplete = false;
         }
 
-        public bool Update(in Information information) {
+        public bool OnUpdate(in ClockInformation information) {
             if (IsComplete) {
                 return true;
             }
 
-            bool isCurrentTimerComplete = ActiveTimer.Update(information);
+            bool isCurrentTimerComplete = ActiveTimer.OnUpdate(information);
             if (isCurrentTimerComplete) {
                 ActiveTimerIndex++;
                 if (ActiveTimerIndex < timerBuilders.Length) {

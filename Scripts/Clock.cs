@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ClockKit {
     public static partial class Clock {
-        public delegate void UpdateCallback(in Information information);
+        public delegate void UpdateCallback(in ClockInformation information);
 
         // MARK: - Add Delegate
 
@@ -31,6 +31,30 @@ namespace ClockKit {
 
         public static UUID AddDelegate(UpdateCallback callback)
             => AddDelegate(Queue.Default, UUID.Create(), 0, callback);
+
+        public static UUID AddDelegate(Queue queue, in UUID key, int priority, IUpdatable updatable)
+            => ClockController.Shared.queues[queue].AddDelegate(key, priority, updatable.OnUpdate);
+
+        public static UUID AddDelegate(in UUID key, int priority, IUpdatable updatable)
+            => AddDelegate(Queue.Default, key, priority, updatable.OnUpdate);
+
+        public static UUID AddDelegate(Queue queue, int priority, IUpdatable updatable)
+            => AddDelegate(queue, UUID.Create(), priority, updatable.OnUpdate);
+
+        public static UUID AddDelegate(Queue queue, in UUID key, IUpdatable updatable)
+            => AddDelegate(queue, key, 0, updatable.OnUpdate);
+
+        public static UUID AddDelegate(Queue queue, IUpdatable updatable)
+            => AddDelegate(queue, UUID.Create(), 0, updatable.OnUpdate);
+
+        public static UUID AddDelegate(in UUID key, IUpdatable updatable)
+            => AddDelegate(Queue.Default, key, 0, updatable.OnUpdate);
+
+        public static UUID AddDelegate(int priority, IUpdatable updatable)
+            => AddDelegate(Queue.Default, UUID.Create(), priority, updatable.OnUpdate);
+
+        public static UUID AddDelegate(IUpdatable updatable)
+            => AddDelegate(Queue.Default, UUID.Create(), 0, updatable.OnUpdate);
 
         // MARK: - Remove Delegate
 

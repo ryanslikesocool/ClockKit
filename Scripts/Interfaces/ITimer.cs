@@ -3,6 +3,6 @@ namespace ClockKit {
         bool IsComplete { get; }
         float StartTime { get; }
 
-        bool Update(in Information information);
+        bool OnUpdate(in ClockInformation information);
     }
 }
