@@ -27,11 +27,31 @@ namespace ClockKit {
         ) : this(spring, EasingUtility.CreateInterpolator<Value>(), 0, start, end) { }
 
         public SpringAnimation(
+            in Spring.Solver solver,
+            Value start,
+            Value end
+        ) : this(solver, EasingUtility.CreateInterpolator<Value>(), 0, start, end) { }
+
+        public SpringAnimation(
             in Spring spring,
             float initialVelocity,
             in Value start,
             in Value end
         ) : this(spring, EasingUtility.CreateInterpolator<Value>(), initialVelocity, start, end) { }
+
+        public SpringAnimation(
+            in Spring.Solver solver,
+            float initialVelocity,
+            in Value start,
+            in Value end
+        ) : this(solver, EasingUtility.CreateInterpolator<Value>(), initialVelocity, start, end) { }
+
+        public SpringAnimation(
+            in Spring.Solver solver,
+            in Spring.Solver.State state,
+            in Value start,
+            in Value end
+        ) : this(solver, EasingUtility.CreateInterpolator<Value>(), state, start, end) { }
 
         public SpringAnimation(
             in IInterpolator<Value> subinterpolator,
@@ -53,6 +73,22 @@ namespace ClockKit {
             in Value start,
             in Value end
         ) : this(new SpringInterpolator<Value>(spring, subinterpolator, initialVelocity), start, end) { }
+
+        public SpringAnimation(
+            in Spring.Solver solver,
+            in IInterpolator<Value> subinterpolator,
+            float initialVelocity,
+            in Value start,
+            in Value end
+        ) : this(new SpringInterpolator<Value>(solver, subinterpolator, initialVelocity), start, end) { }
+
+        public SpringAnimation(
+            in Spring.Solver solver,
+            in IInterpolator<Value> subinterpolator,
+            in Spring.Solver.State state,
+            in Value start,
+            in Value end
+        ) : this(new SpringInterpolator<Value>(solver, subinterpolator, state), start, end) { }
 
         public SpringAnimation(
             in SpringInterpolator<Value> interpolator,
