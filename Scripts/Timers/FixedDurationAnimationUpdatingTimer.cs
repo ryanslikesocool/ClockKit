@@ -40,7 +40,7 @@ namespace ClockKit {
 #else
             float percent = Mathf.Clamp(percent, 0f, 1f);
 #endif
-            Value value = animation.Evaluate(percent);
+            Value value = animation.Evaluate(localTime, percent);
 
             onUpdate(value);
 

@@ -1,9 +1,11 @@
 #if EASEKIT_3
-using System;
 using EaseKit;
 
 namespace ClockKit {
-    public struct EasingAnimation<Value> : IFixedDurationAnimation<Value> {
+    /// <summary>
+    /// A fixed duration animation that eases between two values based on a given easing function.
+    /// </summary>
+    public readonly struct EasingAnimation<Value> : IFixedDurationAnimation<Value> {
         public float Duration { get; }
         public readonly EasingUtility.Function easingFunction;
         public readonly Value start;
@@ -46,7 +48,7 @@ namespace ClockKit {
             this.interpolator = interpolator;
         }
 
-        public Value Evaluate(float percent)
+        public Value Evaluate(float localTime, float percent)
             => EasingUtility.Ease(interpolator, easingFunction, start, end, percent);
     }
 }

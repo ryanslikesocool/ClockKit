@@ -2,17 +2,26 @@
 using EaseKit;
 
 namespace ClockKit {
+    /// <summary>
+    /// An animation that evaluates a <see cref="Spring"/> over time.
+    /// <br/>
+    /// For advanced Spring evaulation, see <see cref="SpringTimer"/>.
+    /// </summary>
+    /// <seealso cref="Spring"/>
+    /// <seealso cref="SpringTimer"/>
     public struct SpringAnimation<Value> : ICompletableAnimation<Value> {
         public readonly Value start;
         public readonly Value end;
-        private SpringInterpolator<Value> interpolator; // { get; private set; } does not work here
+        private readonly IInterpolator<Value> interpolator;
+        private readonly Spring.Solver solver;
+        private Spring.Solver.State state;
 
-        public bool IsComplete => interpolator.IsComplete;
+        public bool IsComplete => state.IsComplete;
 
         public SpringAnimation(
-           in Value start,
-           in Value end
-        ) : this(Spring.Default, 0, start, end) { }
+            in Value start,
+            in Value end
+        ) : this(Spring.Default, start, end) { }
 
         public SpringAnimation(
             float initialVelocity,
@@ -22,86 +31,63 @@ namespace ClockKit {
 
         public SpringAnimation(
             in Spring spring,
-            Value start,
-            Value end
-        ) : this(spring, EasingUtility.CreateInterpolator<Value>(), 0, start, end) { }
-
-        public SpringAnimation(
-            in Spring.Solver solver,
-            Value start,
-            Value end
-        ) : this(solver, EasingUtility.CreateInterpolator<Value>(), 0, start, end) { }
+            in Value start,
+            in Value end
+        ) : this(spring, EasingUtility.CreateInterpolator<Value>(), start, end) { }
 
         public SpringAnimation(
             in Spring spring,
             float initialVelocity,
             in Value start,
             in Value end
-        ) : this(spring, EasingUtility.CreateInterpolator<Value>(), initialVelocity, start, end) { }
-
-        public SpringAnimation(
-            in Spring.Solver solver,
-            float initialVelocity,
-            in Value start,
-            in Value end
-        ) : this(solver, EasingUtility.CreateInterpolator<Value>(), initialVelocity, start, end) { }
-
-        public SpringAnimation(
-            in Spring.Solver solver,
-            in Spring.Solver.State state,
-            in Value start,
-            in Value end
-        ) : this(solver, EasingUtility.CreateInterpolator<Value>(), state, start, end) { }
-
-        public SpringAnimation(
-            in IInterpolator<Value> subinterpolator,
-            in Value start,
-            in Value end
-        ) : this(Spring.Default, subinterpolator, 0, start, end) { }
-
-        public SpringAnimation(
-            in IInterpolator<Value> subinterpolator,
-            float initialVelocity,
-            in Value start,
-            in Value end
-        ) : this(Spring.Default, subinterpolator, initialVelocity, start, end) { }
+        ) : this(spring.CreateSolver(), initialVelocity, start, end) { }
 
         public SpringAnimation(
             in Spring spring,
-            in IInterpolator<Value> subinterpolator,
-            float initialVelocity,
+            in IInterpolator<Value> interpolator,
             in Value start,
             in Value end
-        ) : this(new SpringInterpolator<Value>(spring, subinterpolator, initialVelocity), start, end) { }
+        ) : this(spring.CreateSolver(), interpolator, start, end) { }
 
         public SpringAnimation(
             in Spring.Solver solver,
-            in IInterpolator<Value> subinterpolator,
-            float initialVelocity,
+            in IInterpolator<Value> interpolator,
             in Value start,
             in Value end
-        ) : this(new SpringInterpolator<Value>(solver, subinterpolator, initialVelocity), start, end) { }
+        ) : this(solver, solver.CreateState(0), interpolator, start, end) { }
 
         public SpringAnimation(
             in Spring.Solver solver,
-            in IInterpolator<Value> subinterpolator,
+            float initialVelocity,
+            in Value start,
+            in Value end
+        ) : this(solver, solver.CreateState(initialVelocity), EasingUtility.CreateInterpolator<Value>(), start, end) { }
+
+        public SpringAnimation(
+            in Spring.Solver solver,
             in Spring.Solver.State state,
             in Value start,
             in Value end
-        ) : this(new SpringInterpolator<Value>(solver, subinterpolator, state), start, end) { }
+        ) : this(solver, state, EasingUtility.CreateInterpolator<Value>(), start, end) { }
 
         public SpringAnimation(
-            in SpringInterpolator<Value> interpolator,
+            in Spring.Solver solver,
+            in Spring.Solver.State state,
+            in IInterpolator<Value> interpolator,
             in Value start,
             in Value end
         ) {
             this.start = start;
             this.end = end;
             this.interpolator = interpolator;
+            this.solver = solver;
+            this.state = state;
         }
 
-        public Value Evaluate(float percent)
-            => interpolator.Evaluate(start, end, percent);
+        public Value Evaluate(float localTime, float time) {
+            float springValue = solver.Evaluate(time, ref state);
+            return interpolator.Evaluate(start, end, springValue);
+        }
     }
 }
 #endif

@@ -26,7 +26,7 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
-            Value value = animation.Evaluate(localTime);
+            Value value = animation.Evaluate(localTime, float.NaN);
 
             onUpdate(value);
 
