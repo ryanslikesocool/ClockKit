@@ -1,32 +1,23 @@
-using System;
-#if UNITY_MATHEMATICS
-using Unity.Mathematics;
-#else
-using UnityEngine;
-#endif
-
 namespace ClockKit {
-    public struct AnimationUpdatingTimer<Value, Animation> : IFixedDurationTimer where Animation : IFixedDurationAnimation<Value> {
+    public struct AnimationUpdatingTimer<Value, Animation> : ITimer where Animation : ICompletableAnimation<Value> {
         public delegate void UpdateCallback(Value value);
         public delegate void CompletionCallback(Value value);
 
         public float StartTime { get; }
-        public float Duration => animation.Duration;
 
-        public readonly Animation animation;
+        private Animation animation; // { get; private set; } does not work here
         public readonly UpdateCallback onUpdate;
         public readonly CompletionCallback onComplete;
 
-        public bool IsComplete { get; private set; }
+        public bool IsComplete => animation.IsComplete;
 
-        public AnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
+        public AnimationUpdatingTimer(float startTime, in Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
 
-        public AnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
+        public AnimationUpdatingTimer(float startTime, in Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
             this.StartTime = startTime;
             this.animation = animation;
             this.onUpdate = onUpdate;
             this.onComplete = onComplete;
-            IsComplete = false;
         }
 
         public bool OnUpdate(in ClockInformation information) {
@@ -35,16 +26,10 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
-#if UNITY_MATHEMATICS
-            float percent = math.saturate(localTime / Duration);
-#else
-            float percent = Mathf.Clamp(percent, 0f, 1f);
-#endif
-            Value value = animation.Evaluate(percent);
+            Value value = animation.Evaluate(localTime);
 
             onUpdate(value);
 
-            IsComplete = percent >= 1;
             if (IsComplete) {
                 onComplete?.Invoke(value);
             }

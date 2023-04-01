@@ -10,13 +10,35 @@ namespace ClockKit {
         public readonly Value end;
         public readonly IInterpolator<Value> interpolator;
 
-        public EasingAnimation(Easing easing, float duration, Value start, Value end) : this(EasingUtility.CreateInterpolator<Value>(), easing.GetFunction(), duration, start, end) { }
+        public EasingAnimation(
+            Easing easing,
+            float duration,
+            in Value start,
+            in Value end
+        ) : this(EasingUtility.CreateInterpolator<Value>(), easing.GetFunction(), duration, start, end) { }
 
-        public EasingAnimation(IInterpolator<Value> interpolator, Easing easing, float duration, Value start, Value end) : this(interpolator, easing.GetFunction(), duration, start, end) { }
+        public EasingAnimation(
+            in IInterpolator<Value> interpolator,
+            Easing easing,
+            float duration,
+            in Value start,
+            in Value end
+        ) : this(interpolator, easing.GetFunction(), duration, start, end) { }
 
-        public EasingAnimation(EasingUtility.Function easingFunction, float duration, Value start, Value end) : this(EasingUtility.CreateInterpolator<Value>(), easingFunction, duration, start, end) { }
+        public EasingAnimation(
+            in EasingUtility.Function easingFunction,
+            float duration,
+            in Value start,
+            in Value end
+        ) : this(EasingUtility.CreateInterpolator<Value>(), easingFunction, duration, start, end) { }
 
-        public EasingAnimation(IInterpolator<Value> interpolator, EasingUtility.Function easingFunction, float duration, Value start, Value end) {
+        public EasingAnimation(
+            in IInterpolator<Value> interpolator,
+            EasingUtility.Function easingFunction,
+            float duration,
+            in Value start,
+            in Value end
+        ) {
             this.Duration = duration;
             this.easingFunction = easingFunction;
             this.start = start;
