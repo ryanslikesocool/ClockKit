@@ -379,10 +379,10 @@ namespace ClockKit {
             Queue queue,
             in UUID key,
             in Animation animation,
-            AnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            AnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+            CompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            CompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
         ) where Animation : ICompletableAnimation<Value> {
-            ITimer timer = new AnimationUpdatingTimer<Value, Animation>(
+            ITimer timer = new CompletableAnimationUpdatingTimer<Value, Animation>(
                 startTime: Time.time,
                 animation: animation,
                 onUpdate: onUpdate,
@@ -394,23 +394,23 @@ namespace ClockKit {
         public static UUID Animate<Value, Animation>(
             in UUID key,
             in Animation animation,
-            AnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            AnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+            CompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            CompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
         ) where Animation : ICompletableAnimation<Value>
             => Animate(Queue.Default, key, animation, onUpdate, onComplete);
 
         public static UUID Animate<Value, Animation>(
             Queue queue,
             Animation animation,
-            AnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            AnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+            CompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            CompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
         ) where Animation : ICompletableAnimation<Value>
             => Animate(queue, UUID.Create(), animation, onUpdate, onComplete);
 
         public static UUID Animate<Value, Animation>(
             Animation animation,
-            AnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            AnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+            CompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            CompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
         ) where Animation : ICompletableAnimation<Value>
             => Animate(Queue.Default, UUID.Create(), animation, onUpdate, onComplete);
 
