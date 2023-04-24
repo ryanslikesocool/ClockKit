@@ -3,7 +3,7 @@ using Foundation;
 using UnityEngine;
 
 namespace ClockKit {
-    internal sealed class ClockController : Singleton<ClockController> {
+    internal sealed class ClockController : AutoSingleton<ClockController> {
         // MARK: - Properties
 
         internal Dictionary<Queue, UpdateQueue> queues = default;
