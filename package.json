@@ -13,6 +13,6 @@
   "license": "MIT",
   "type": "library",
   "dependencies": {
-    "com.developedwithlove.foundation": "1.0.0"
+    "com.developedwithlove.foundation": "0.1.0-pre.1"
   }
 }
