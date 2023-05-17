@@ -8,6 +8,14 @@ namespace ClockKit {
 
         // MARK: - Add Delegate
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             in UUID key,
@@ -16,6 +24,13 @@ namespace ClockKit {
         )
             => ClockController.Shared.queues[queue].AddDelegate(key, priority, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             in UUID key,
             int priority,
@@ -23,6 +38,13 @@ namespace ClockKit {
         )
             => AddDelegate(Queue.Default, key, priority, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             int priority,
@@ -30,6 +52,13 @@ namespace ClockKit {
         )
             => AddDelegate(queue, UUID.Create(), priority, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             in UUID key,
@@ -37,29 +66,60 @@ namespace ClockKit {
         )
             => AddDelegate(queue, key, 0, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             UpdateCallback callback
         )
             => AddDelegate(queue, UUID.Create(), 0, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             in UUID key,
             UpdateCallback callback
         )
             => AddDelegate(Queue.Default, key, 0, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             int priority,
             UpdateCallback callback
         )
             => AddDelegate(Queue.Default, UUID.Create(), priority, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="callback">The callback to invoke every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             UpdateCallback callback
         )
             => AddDelegate(Queue.Default, UUID.Create(), 0, callback);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             in UUID key,
@@ -68,6 +128,13 @@ namespace ClockKit {
         )
             => ClockController.Shared.queues[queue].AddDelegate(key, priority, updatable.OnUpdate);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             in UUID key,
             int priority,
@@ -75,6 +142,13 @@ namespace ClockKit {
         )
             => AddDelegate(Queue.Default, key, priority, updatable.OnUpdate);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             int priority,
@@ -82,6 +156,13 @@ namespace ClockKit {
         )
             => AddDelegate(queue, UUID.Create(), priority, updatable.OnUpdate);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             in UUID key,
@@ -89,24 +170,47 @@ namespace ClockKit {
         )
             => AddDelegate(queue, key, 0, updatable.OnUpdate);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="queue">The queue to update on.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             Queue queue,
             in IUpdatable updatable
         )
             => AddDelegate(queue, UUID.Create(), 0, updatable.OnUpdate);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="key">The delegate key.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             in UUID key,
             in IUpdatable updatable
         )
             => AddDelegate(Queue.Default, key, 0, updatable.OnUpdate);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             int priority,
             in IUpdatable updatable
         )
             => AddDelegate(Queue.Default, UUID.Create(), priority, updatable.OnUpdate);
 
+        /// <summary>
+        /// Add an update delegate.
+        /// </summary>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <returns>The delegate key.</returns>
         public static UUID AddDelegate(
             in IUpdatable updatable
         )
@@ -114,6 +218,12 @@ namespace ClockKit {
 
         // MARK: - Remove Delegate
 
+        /// <summary>
+        /// Remove an update delegate from a queue with its key.
+        /// </summary>
+        /// <param name="queue">The queue the delegate was added to.</param>
+        /// <param name="key">The delegate's key, provided by <c>Clock.AddDelegate</c>.</param>
+        /// <returns><see langword="true"/> if the delegate was successfully removed; <see langword="false"/> otherwise.</returns>
         public static bool RemoveDelegate(Queue queue, UUID? key) {
             if (!key.TryGetValue(out UUID _key)) {
                 return false;
@@ -121,6 +231,11 @@ namespace ClockKit {
             return ClockController.Shared.queues[queue].RemoveDelegate(_key);
         }
 
+        /// <summary>
+        /// Remove an update delegate with its key.  All queues will attempt to remove the delegate.
+        /// </summary>
+        /// <param name="key">The delegate's key, provided by <c>Clock.AddDelegate</c>.</param>
+        /// <returns><see langword="true"/> if the delegate was successfully removed; <see langword="false"/> otherwise.</returns>
         public static bool RemoveDelegate(UUID? key) {
             if (!key.TryGetValue(out UUID _key)) {
                 return false;
@@ -189,6 +304,7 @@ namespace ClockKit {
         // MARK: - Start Timer (Convenience)
 
         // MARK: Update Until
+
         public static UUID Update(
             Queue queue,
             in UUID key,
@@ -226,6 +342,7 @@ namespace ClockKit {
             => Update(Queue.Default, UUID.Create(), until, onUpdate, onComplete);
 
         // MARK: Update For
+
         public static UUID Update(
             Queue queue,
             in UUID key,
@@ -266,6 +383,7 @@ namespace ClockKit {
             => Update(Queue.Default, UUID.Create(), duration, onUpdate, onComplete);
 
         // MARK: Delay
+
         /// <summary>
         /// Delays a function call for a single update cycle (normally a single frame).
         /// </summary>
@@ -315,6 +433,7 @@ namespace ClockKit {
             => Delay(Queue.Default, UUID.Create(), frames: 0, onComplete);
 
         // MARK: Delay Frames
+
         public static UUID Delay(
             Queue queue,
             in UUID key,
@@ -350,6 +469,7 @@ namespace ClockKit {
             => Delay(Queue.Default, UUID.Create(), frames, onComplete);
 
         // MARK: Delay Until
+
         public static UUID Delay(
             Queue queue,
             in UUID key,
@@ -385,6 +505,7 @@ namespace ClockKit {
             => Delay(Queue.Default, UUID.Create(), until, onComplete);
 
         // MARK: Delay For
+
         public static UUID Delay(
             Queue queue,
             in UUID key,
@@ -420,6 +541,7 @@ namespace ClockKit {
             => Delay(Queue.Default, UUID.Create(), duration, onComplete);
 
         // MARK: Animate
+
         public static UUID Animate<Value, Animation>(
             Queue queue,
             in UUID key,
@@ -499,6 +621,7 @@ namespace ClockKit {
             => Animate(Queue.Default, UUID.Create(), animation, onUpdate, onComplete);
 
         // MARK: Sequence
+
         public static UUID Sequence(
             Queue queue,
             in UUID key,
