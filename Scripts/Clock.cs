@@ -265,6 +265,90 @@ namespace ClockKit {
         )
             => Update(Queue.Default, UUID.Create(), duration, onUpdate, onComplete);
 
+        // MARK: Delay
+        /// <summary>
+        /// Delays a function call for a single update cycle (normally a single frame).
+        /// </summary>
+        /// <param name="queue">The queue to delay on.</param>
+        /// <param name="key">The timer key.</param>
+        /// <param name="onComplete">The function to call when the timer is complete.</param>
+        /// <returns>The timer key.</returns>
+        public static UUID Delay(
+            Queue queue,
+            in UUID key,
+            FrameDelayingTimer.CompletionCallback onComplete
+        )
+            => Delay(queue, key, frames: 1, onComplete);
+
+        /// <summary>
+        /// Delays a function call for a single update cycle (normally a single frame).
+        /// </summary>
+        /// <param name="key">The timer key.</param>
+        /// <param name="onComplete">The function to call when the timer is complete.</param>
+        /// <returns>The timer key.</returns>
+        public static UUID Delay(
+            in UUID key,
+            FrameDelayingTimer.CompletionCallback onComplete
+        )
+            => Delay(Queue.Default, key, frames: 0, onComplete);
+
+        /// <summary>
+        /// Delays a function call for a single update cycle (normally a single frame).
+        /// </summary>
+        /// <param name="queue">The queue to delay on.</param>
+        /// <param name="onComplete">The function to call when the timer is complete.</param>
+        /// <returns>The timer key.</returns>
+        public static UUID Delay(
+            Queue queue,
+            FrameDelayingTimer.CompletionCallback onComplete
+        )
+            => Delay(queue, UUID.Create(), frames: 0, onComplete);
+
+        /// <summary>
+        /// Delays a function call for a single update cycle (normally a single frame).
+        /// </summary>
+        /// <param name="onComplete">The function to call when the timer is complete.</param>
+        /// <returns>The timer key.</returns>
+        public static UUID Delay(
+            FrameDelayingTimer.CompletionCallback onComplete
+        )
+            => Delay(Queue.Default, UUID.Create(), frames: 0, onComplete);
+
+        // MARK: Delay Frames
+        public static UUID Delay(
+            Queue queue,
+            in UUID key,
+            int frames,
+            FrameDelayingTimer.CompletionCallback onComplete
+        ) {
+            ITimer timer = new FrameDelayingTimer(
+                startTime: Time.time,
+                frames: frames,
+                onComplete: onComplete
+            );
+            return StartTimer(queue, key, timer);
+        }
+
+        public static UUID Delay(
+            in UUID key,
+            int frames,
+            FrameDelayingTimer.CompletionCallback onComplete
+        )
+            => Delay(Queue.Default, key, frames, onComplete);
+
+        public static UUID Delay(
+            Queue queue,
+            int frames,
+            FrameDelayingTimer.CompletionCallback onComplete
+        )
+            => Delay(queue, UUID.Create(), frames, onComplete);
+
+        public static UUID Delay(
+            int frames,
+            FrameDelayingTimer.CompletionCallback onComplete
+        )
+            => Delay(Queue.Default, UUID.Create(), frames, onComplete);
+
         // MARK: Delay Until
         public static UUID Delay(
             Queue queue,
