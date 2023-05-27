@@ -4,7 +4,7 @@ namespace ClockKit {
     /// </summary>
     /// <typeparam name="Value">The type of value to animate.</typeparam>
     /// <seealso cref="IAnimation"/>
-    public interface IFixedDurationAnimation<Value> : IAnimation<Value> {
+    public interface IFiniteAnimation<Value> : IAnimation<Value> {
         float Duration { get; }
     }
 }

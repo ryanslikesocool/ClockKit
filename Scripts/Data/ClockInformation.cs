@@ -2,9 +2,9 @@ using System;
 
 namespace ClockKit {
     /// <summary>
-    /// Information about the current update.
+    /// Information about a clock update.
     /// </summary>
-    public readonly struct ClockInformation {
+    public readonly struct ClockInformation : ITimeInformation {
         /// <summary>
         /// The queue that the information comes from.
         /// </summary>

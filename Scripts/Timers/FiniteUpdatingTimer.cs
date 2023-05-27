@@ -1,19 +1,24 @@
 using System;
 
 namespace ClockKit {
-    public struct FixedDurationDelayingTimer : IFixedDurationTimer {
+    public struct FiniteUpdatingTimer : IFiniteTimer {
+        public delegate void UpdateCallback(float localTime);
         public delegate void CompletionCallback();
 
         public float StartTime { get; }
         public float Duration { get; }
 
+        public readonly UpdateCallback onUpdate;
         public readonly CompletionCallback onComplete;
 
         public bool IsComplete { get; private set; }
 
-        public FixedDurationDelayingTimer(float startTime, float duration, CompletionCallback onComplete) {
+        public FiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate) : this(startTime, duration, onUpdate, null) { }
+
+        public FiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate, CompletionCallback onComplete) {
             this.StartTime = startTime;
             this.Duration = duration;
+            this.onUpdate = onUpdate;
             this.onComplete = onComplete;
             this.IsComplete = false;
         }
@@ -24,6 +29,7 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
+            onUpdate?.Invoke(localTime);
 
             IsComplete = localTime >= Duration;
             if (IsComplete) {

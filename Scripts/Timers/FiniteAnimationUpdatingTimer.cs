@@ -6,7 +6,7 @@ using UnityEngine;
 #endif
 
 namespace ClockKit {
-    public struct FixedDurationAnimationUpdatingTimer<Value, Animation> : IFixedDurationTimer where Animation : IFixedDurationAnimation<Value> {
+    public struct FiniteAnimationUpdatingTimer<Value, Animation> : IFiniteTimer where Animation : IFiniteAnimation<Value> {
         public delegate void UpdateCallback(Value value);
         public delegate void CompletionCallback(Value value);
 
@@ -19,9 +19,9 @@ namespace ClockKit {
 
         public bool IsComplete { get; private set; }
 
-        public FixedDurationAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
+        public FiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
 
-        public FixedDurationAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
+        public FiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
             this.StartTime = startTime;
             this.animation = animation;
             this.onUpdate = onUpdate;

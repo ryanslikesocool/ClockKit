@@ -5,7 +5,7 @@ namespace ClockKit {
     /// <summary>
     /// A fixed duration animation that eases between two values based on a given easing function.
     /// </summary>
-    public readonly struct EasingAnimation<Value> : IFixedDurationAnimation<Value> {
+    public readonly struct EasingAnimation<Value> : IFiniteAnimation<Value> {
         public float Duration { get; }
         public readonly EasingUtility.Function easingFunction;
         public readonly Value start;
