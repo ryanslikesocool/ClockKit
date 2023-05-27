@@ -4,9 +4,9 @@ using Foundation;
 using UnityEngine;
 
 namespace ClockKit {
-    public static partial class Clock {
+    public static partial class CKClock {
         public static CKKey Ease<Value>(
-            Queue queue,
+            CKQueue queue,
             in IInterpolator<Value> interpolator,
             Easing easing,
             float duration,
@@ -28,7 +28,7 @@ namespace ClockKit {
                 onUpdate: onUpdate,
                 onComplete: onComplete
             );
-            return Clock.StartTimer(queue, timer);
+            return StartTimer(queue, timer);
         }
 
         public static CKKey Ease<Value>(
@@ -41,7 +41,7 @@ namespace ClockKit {
             in FiniteAnimationUpdatingTimer<Value, IFiniteAnimation<Value>>.CompletionCallback onComplete = null
         )
             => Ease(
-                Queue.Default,
+                CKQueue.Default,
                 interpolator,
                 easing,
                 duration,
@@ -52,7 +52,7 @@ namespace ClockKit {
             );
 
         public static CKKey Ease<Value>(
-            Queue queue,
+            CKQueue queue,
             Easing easing,
             float duration,
             in Value start,
@@ -80,7 +80,7 @@ namespace ClockKit {
             in FiniteAnimationUpdatingTimer<Value, IFiniteAnimation<Value>>.CompletionCallback onComplete = null
         )
             => Ease(
-                Queue.Default,
+                CKQueue.Default,
                 EasingUtility.CreateInterpolator<Value>(),
                 easing,
                 duration,

@@ -1,7 +1,7 @@
 using System;
 
 namespace ClockKit {
-    public enum Queue {
+    public enum CKQueue {
         /// <summary>
         /// The <c>Update</c> queue corresponds to Unity's <c>Update</c> loop.
         /// </summary>

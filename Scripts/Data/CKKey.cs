@@ -4,10 +4,10 @@ namespace ClockKit {
     /// <summary>
     /// <c>CKKey</c>s are to be used as an identifier for update delegates and timers.
     ///
-    /// You should never create a key manually.  Instead, store the key from the result of the <see cref="Clock.AddDelegate(Queue, int, in IUpdatable))"/> and <see cref="Clock.StartTimer(Queue, in ITimer)"/> functions.
+    /// You should never create a key manually.  Instead, store the key from the result of the <see cref="CKClock.AddDelegate(Queue, int, in IUpdatable))"/> and <see cref="CKClock.StartTimer(Queue, in ITimer)"/> functions.
     ///
     /// Each queue can support up to 4,294,967,296 (<c>UInt32.MaxValue + 1</c>) keys at the same time.
-    /// Once a key has been removed from a queue with the <see cref="Clock.RemoveDelegate(Queue, in CKKey)"/> and <see cref="Clock.StopTimer(Queue, in CKKey)"/> functions, it becomes available for reuse by the queue.
+    /// Once a key has been removed from a queue with the <see cref="CKClock.RemoveDelegate(Queue, in CKKey)"/> and <see cref="CKClock.StopTimer(Queue, in CKKey)"/> functions, it becomes available for reuse by the queue.
     /// </summary>
     /// <remarks>
     /// Two queues may contain the same key.  Always specify a queue in a functoin call when possible.

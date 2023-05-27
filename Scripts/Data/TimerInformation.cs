@@ -9,7 +9,7 @@ namespace ClockKit {
         /// <summary>
         /// The queue that the information comes from.
         /// </summary>
-        public readonly Queue queue;
+        public readonly CKQueue queue;
 
         /// <summary>
         /// The queue's current time.
@@ -23,7 +23,7 @@ namespace ClockKit {
 
         public readonly float deltaTime;
 
-        public TimerInformation(Queue queue, float time, float localTime, float deltaTime) {
+        public TimerInformation(CKQueue queue, float time, float localTime, float deltaTime) {
             this.queue = queue;
             this.time = time;
             this.localTime = localTime;

@@ -6,7 +6,7 @@ namespace ClockKit {
     internal sealed class ClockController : AutoSingleton<ClockController> {
         // MARK: - Properties
 
-        internal Dictionary<Queue, UpdateQueue> queues = default;
+        internal Dictionary<CKQueue, UpdateQueue> queues = default;
 
         // MARK: - Lifecycle
 
@@ -14,10 +14,10 @@ namespace ClockKit {
             base.Awake();
 
             float time = Time.time;
-            queues = new Dictionary<Queue, UpdateQueue> {
-                { Queue.Update, new UpdateQueue(Queue.Update, time) },
-                { Queue.FixedUpdate, new UpdateQueue(Queue.FixedUpdate, time) },
-                { Queue.LateUpdate, new UpdateQueue(Queue.LateUpdate, time) },
+            queues = new Dictionary<CKQueue, UpdateQueue> {
+                { CKQueue.Update, new UpdateQueue(CKQueue.Update, time) },
+                { CKQueue.FixedUpdate, new UpdateQueue(CKQueue.FixedUpdate, time) },
+                { CKQueue.LateUpdate, new UpdateQueue(CKQueue.LateUpdate, time) },
             };
 
             gameObject.hideFlags = HideFlags.HideAndDontSave;
@@ -32,15 +32,15 @@ namespace ClockKit {
         // MARK: - Update
 
         private void Update() {
-            queues[Queue.Update].Update(Time.time);
+            queues[CKQueue.Update].Update(Time.time);
         }
 
         private void FixedUpdate() {
-            queues[Queue.FixedUpdate].Update(Time.time);
+            queues[CKQueue.FixedUpdate].Update(Time.time);
         }
 
         private void LateUpdate() {
-            queues[Queue.LateUpdate].Update(Time.time);
+            queues[CKQueue.LateUpdate].Update(Time.time);
         }
     }
 }

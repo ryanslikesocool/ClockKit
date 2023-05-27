@@ -6,10 +6,10 @@ using Foundation;
 
 namespace ClockKit {
     internal sealed class UpdateQueue {
-        public readonly Queue Queue;
+        public readonly CKQueue Queue;
 
         private Dictionary<CKKey, ITimer> timers;
-        private Dictionary<CKKey, Clock.UpdateCallback> delegates;
+        private Dictionary<CKKey, CKClock.UpdateCallback> delegates;
         private List<(int, CKKey)> updateOrder;
 
         public bool IsEmpty => timers.Count == 0 && delegates.Count == 0;
@@ -23,7 +23,7 @@ namespace ClockKit {
 
         // MARK: - Lifecycle
 
-        public UpdateQueue(Queue queue, float currentTime) {
+        public UpdateQueue(CKQueue queue, float currentTime) {
             this.Queue = queue;
 
             this.previousTime = currentTime;
@@ -31,7 +31,7 @@ namespace ClockKit {
             this.updateCount = 0;
 
             this.timers = new Dictionary<CKKey, ITimer>();
-            this.delegates = new Dictionary<CKKey, Clock.UpdateCallback>();
+            this.delegates = new Dictionary<CKKey, CKClock.UpdateCallback>();
             this.updateOrder = new List<(int, CKKey)>();
 
             this.currentKey = CKKey.zero;
@@ -104,7 +104,7 @@ namespace ClockKit {
 
         // MARK: - Delegates
 
-        public CKKey AddDelegate(int priority, in Clock.UpdateCallback body) {
+        public CKKey AddDelegate(int priority, in CKClock.UpdateCallback body) {
             CKKey key = RetrieveNextKey();
             delegates.Add(key, body);
             updateOrder.Add((priority, key));
