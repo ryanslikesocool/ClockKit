@@ -10,8 +10,8 @@ namespace ClockKit {
     /// <seealso cref="Spring"/>
     /// <seealso cref="SpringAnimation"/>
     public struct SpringTimer : ITimer {
-        public delegate void UpdateCallback(Spring.Solver.State state);
-        public delegate void CompletionCallback(Spring.Solver.State state);
+        public delegate void UpdateCallback(in Spring.Solver.State state);
+        public delegate void CompletionCallback(in Spring.Solver.State state);
 
         public float StartTime { get; }
 

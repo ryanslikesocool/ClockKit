@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Foundation;
 using UnityEngine;
 
@@ -146,7 +147,7 @@ namespace ClockKit {
         public static bool StopTimer(CKQueue queue, in CKKey key)
             => ClockController.Shared.queues[queue].StopTimer(key);
 
-        public static bool[] StopTimers(CKQueue queue, in CKKey[] keys)
+        public static IEnumerable<bool> StopTimers(CKQueue queue, in CKKey[] keys)
             => keys.Map(key => StopTimer(key));
 
         public static bool StopTimer(in CKKey key) {
@@ -157,7 +158,7 @@ namespace ClockKit {
             return result;
         }
 
-        public static bool[] StopTimers(in CKKey[] keys)
+        public static IEnumerable<bool> StopTimers(in CKKey[] keys)
             => keys.Map(key => StopTimer(key));
 
         // MARK: - Start Timer (Convenience)
