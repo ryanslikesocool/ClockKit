@@ -16,13 +16,13 @@ ClockKit will automatically create a game object and attach scripts the first ti
 
 ### Essentials
 
-\- __Clock__\
-The static `Clock` class provides access to most functionality, including:
+\- __CKClock__\
+The static `CKClock` class provides access to most functionality, including:
 - starting and stopping timers
 - adding and removing update delegates
 
 \- __Queues__\
-Three `Queue`s are provided by default, each associated with a Unity-provided update loop.
+Three `CKQueue`s are provided by default, each associated with a Unity-provided update loop.
 The Update queue is used by default unless otherwise specified.
 
 \- __Clock Information__\
@@ -33,38 +33,32 @@ A `ClockInformation` struct is provided with essential current time information 
 - update count
 
 ### Starting Timers
-The `Clock` class contains multiple functions and overloads to start timers.
+The `CKClock` class contains multiple functions and overloads to start timers.
 ```cs
-Clock.Delay(queue: Queue.Update, key: UUID.Create(), duration: 2.5f, onComplete: () => {
+CKClock.Delay(queue: Queue.Update, duration: 2.5f, onComplete: () => {
     Debug.Log("2.5 seconds have passed.");
 })
 ```
 
-Each function provides overloads allowing omission of some values, such as the queue and key.
+Each function provides overloads allowing omission of some values, such as the queue.
 ```cs
 // uses Queue.Default
-Clock.Delay(key: UUID.Create(), duration: 2.5f, onComplete: () => { /* ... */ });
-
-// uses UUID.Create()
-Clock.Delay(queue: Queue.FixedUpdate, duration: 2.5f, onComplete: () => { /* ... */ });
-
-// uses Queue.Default and UUID.Create()
 Clock.Delay(duration: 2.5f, onComplete: () => { /* ... */ });
 ```
 
 ### Stopping Timers
-All `Clock` functions that start timers return a `UUID` object that can be used to stop the associated timer.
+All `Clock` functions that start timers return a `CKKey` object that can be used to stop the associated timer.
 ```cs
-UUID delayKey = Clock.Delay(duration: 2.5f, onComplete: () => {
+CKKey delayKey = CKClock.Delay(duration: 2.5f, onComplete: () => {
     Debug.Log("2.5 seconds have passed.");
 });
 
-bool success = Clock.StopTimer(delayKey);
+bool success = CKClock.StopTimer(delayKey);
 ```
 The `StopTimer` function returns a `bool`, returning `true` if a timer associated with the key exists and was stopped, or `false` if there was no timer.
 
 By default, the `StopTimer` function will attempt to stop the timer on all queues.
-An overload is provided that allows a timer to be stopped on a certain `Queue`.
+An overload is provided that allows a timer to be stopped on a certain `CKQueue`.
 
 A `StopTimers` function is also provided to stop multiple timers at once.
 
@@ -137,7 +131,7 @@ ITimer customTimer = new MyCustomTimer(
 );
 
 // Start the timer
-UUID customTimerKey = Clock.StartTimer(queue: Queue.LateUpdate, timer: customTimer);
+CKKey customTimerKey = Clock.StartTimer(queue: Queue.LateUpdate, timer: customTimer);
 ```
 ... and stopped in the same way
 ```cs
