@@ -2,7 +2,7 @@ using System;
 
 namespace ClockKit {
     public struct CKFiniteUpdatingTimer : ICKFiniteTimer {
-        public delegate void UpdateCallback(float localTime);
+        public delegate void UpdateCallback(in CKTimerInformation information);
         public delegate void CompletionCallback();
 
         public float StartTime { get; }
@@ -29,7 +29,9 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
-            onUpdate?.Invoke(localTime);
+
+            CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
+            onUpdate?.Invoke(timerInformation);
 
             IsComplete = localTime >= Duration;
             if (IsComplete) {

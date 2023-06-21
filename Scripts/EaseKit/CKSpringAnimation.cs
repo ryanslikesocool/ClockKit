@@ -5,10 +5,10 @@ namespace ClockKit {
     /// <summary>
     /// An animation that evaluates a <see cref="Spring"/> over time.
     /// <br/>
-    /// For advanced Spring evaulation, see <see cref="SpringTimer"/>.
+    /// For advanced Spring evaulation, see <see cref="CKSpringTimer"/>.
     /// </summary>
     /// <seealso cref="Spring"/>
-    /// <seealso cref="SpringTimer"/>
+    /// <seealso cref="CKSpringTimer"/>
     public struct CKSpringAnimation<Value> : ICKCompletableAnimation<Value> {
         public readonly Value start;
         public readonly Value end;

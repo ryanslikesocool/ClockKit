@@ -2,8 +2,8 @@ using System;
 
 namespace ClockKit {
     public struct CKIndefiniteDelayingTimer : ICKTimer {
-        public delegate void CompletionCallback(float localTime);
-        public delegate bool CompletionPredicate(float localTime);
+        public delegate void CompletionCallback(in CKTimerInformation information);
+        public delegate bool CompletionPredicate(in CKTimerInformation information);
 
         public float StartTime { get; }
 
@@ -25,10 +25,11 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
+            CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
 
-            IsComplete = completionPredicate(localTime);
+            IsComplete = completionPredicate(timerInformation);
             if (IsComplete) {
-                onComplete?.Invoke(localTime);
+                onComplete?.Invoke(timerInformation);
             }
             return IsComplete;
         }

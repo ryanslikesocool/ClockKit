@@ -3,12 +3,12 @@ using EaseKit;
 
 namespace ClockKit {
     /// <summary>
-    /// A <see cref="Spring"/>-based <see cref="ITimer"/> that provides more information for advanced use, such as retrieving the spring state.
+    /// A <see cref="Spring"/>-based <see cref="ICKTimer"/> that provides more information for advanced use, such as retrieving the spring state.
     /// <br/>
-    /// For basic <see cref="Spring"/> evaulation, see <see cref="SpringAnimation"/>.
+    /// For basic <see cref="Spring"/> evaulation, see <see cref="CKSpringAnimation"/>.
     /// </summary>
     /// <seealso cref="Spring"/>
-    /// <seealso cref="SpringAnimation"/>
+    /// <seealso cref="CKSpringAnimation"/>
     public struct CKSpringTimer : ITimer {
         public delegate void UpdateCallback(in Spring.Solver.State state);
         public delegate void CompletionCallback(in Spring.Solver.State state);

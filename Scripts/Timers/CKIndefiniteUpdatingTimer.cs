@@ -2,9 +2,9 @@ using System;
 
 namespace ClockKit {
     public struct CKIndefiniteUpdatingTimer : ICKTimer {
-        public delegate void UpdateCallback(float localTime);
-        public delegate void CompletionCallback(float localTime);
-        public delegate bool CompletionPredicate(float localTime);
+        public delegate void UpdateCallback(in CKTimerInformation information);
+        public delegate void CompletionCallback(in CKTimerInformation information);
+        public delegate bool CompletionPredicate(in CKTimerInformation information);
 
         public float StartTime { get; }
 
@@ -30,11 +30,12 @@ namespace ClockKit {
             }
 
             float localTime = information.time - StartTime;
-            onUpdate?.Invoke(localTime);
+            CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
+            onUpdate?.Invoke(timerInformation);
 
-            IsComplete = completionPredicate(localTime);
+            IsComplete = completionPredicate(timerInformation);
             if (IsComplete) {
-                onComplete?.Invoke(localTime);
+                onComplete?.Invoke(timerInformation);
             }
             return IsComplete;
         }
