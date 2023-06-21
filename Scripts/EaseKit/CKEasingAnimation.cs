@@ -49,7 +49,7 @@ namespace ClockKit {
         }
 
         public Value Evaluate(float localTime, float percent)
-            => EasingUtility.Ease(interpolator, easingFunction, start, end, percent);
+            => EasingUtility.Evaluate(interpolator, easingFunction, start, end, percent);
     }
 }
 #endif
