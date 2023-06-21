@@ -9,7 +9,7 @@ namespace ClockKit {
     /// </summary>
     /// <seealso cref="Spring"/>
     /// <seealso cref="CKSpringAnimation"/>
-    public struct CKSpringTimer : ITimer {
+    public struct CKSpringTimer : ICKTimer {
         public delegate void UpdateCallback(in Spring.Solver.State state);
         public delegate void CompletionCallback(in Spring.Solver.State state);
 
@@ -67,7 +67,7 @@ namespace ClockKit {
             this.onComplete = onComplete;
         }
 
-        public bool OnUpdate(in ClockInformation information) {
+        public bool OnUpdate(in CKClockInformation information) {
             if (IsComplete) {
                 return true;
             }
