@@ -113,7 +113,7 @@ namespace ClockKit {
         /// <param name="queue">The queue the delegate was added to.</param>
         /// <param name="key">The delegate's key, provided by <c>Clock.AddDelegate</c>.</param>
         /// <returns><see langword="true"/> if the delegate was successfully removed; <see langword="false"/> otherwise.</returns>
-        public static bool RemoveDelegate(CKQueue queue, in CKKey key)
+        public static bool RemoveDelegate(CKQueue queue, in CKKey? key)
             => CKClockController.Shared.queues[queue].RemoveDelegate(key);
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace ClockKit {
         /// </summary>
         /// <param name="key">The delegate's key, provided by <c>Clock.AddDelegate</c>.</param>
         /// <returns><see langword="true"/> if the delegate was successfully removed; <see langword="false"/> otherwise.</returns>
-        public static bool RemoveDelegate(in CKKey key) {
+        public static bool RemoveDelegate(in CKKey? key) {
             bool result = false;
             foreach (CKQueue queue in CKClockController.Shared.queues.Keys) {
                 result |= RemoveDelegate(queue, key);

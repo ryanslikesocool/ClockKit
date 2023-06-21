@@ -111,10 +111,14 @@ namespace ClockKit {
             return key;
         }
 
-        public bool RemoveDelegate(CKKey key) {
-            bool result = delegates.ContainsKey(key);
-            delegates.Remove(key);
-            if (updateOrder.FirstIndex(pair => pair.Item2 == key).TryGetValue(out int index)) {
+        public bool RemoveDelegate(CKKey? key) {
+            if (key is not CKKey _key) {
+                return false;
+            }
+
+            bool result = delegates.ContainsKey(_key);
+            delegates.Remove(_key);
+            if (updateOrder.FirstIndex(pair => pair.Item2 == _key).TryGetValue(out int index)) {
                 updateOrder.RemoveAt(index);
             }
             ValidateUpdateOrder();
@@ -130,10 +134,10 @@ namespace ClockKit {
         }
 
         public bool StopTimer(in CKKey? key) {
-            if (key is CKKey _key) {
-                return timers.Remove(_key);
+            if (key is not CKKey _key) {
+                return false;
             }
-            return false;
+            return timers.Remove(_key);
         }
     }
 }
