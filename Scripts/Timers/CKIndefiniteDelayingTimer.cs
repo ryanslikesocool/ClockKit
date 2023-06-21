@@ -1,9 +1,9 @@
 using System;
 
 namespace ClockKit {
-    public struct IndefiniteDelayingTimer : ITimer {
-        public delegate void CompletionCallback(float localTime);
-        public delegate bool CompletionPredicate(float localTime);
+    public struct CKIndefiniteDelayingTimer : ICKTimer {
+        public delegate void CompletionCallback(in CKTimerInformation information);
+        public delegate bool CompletionPredicate(in CKTimerInformation information);
 
         public float StartTime { get; }
 
@@ -12,23 +12,24 @@ namespace ClockKit {
 
         public bool IsComplete { get; private set; }
 
-        public IndefiniteDelayingTimer(float startTime, CompletionCallback onComplete, CompletionPredicate completionPredicate) {
+        public CKIndefiniteDelayingTimer(float startTime, CompletionCallback onComplete, CompletionPredicate completionPredicate) {
             this.StartTime = startTime;
             this.onComplete = onComplete;
             this.completionPredicate = completionPredicate;
             IsComplete = false;
         }
 
-        public bool OnUpdate(in ClockInformation information) {
+        public bool OnUpdate(in CKClockInformation information) {
             if (IsComplete) {
                 return true;
             }
 
             float localTime = information.time - StartTime;
+            CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
 
-            IsComplete = completionPredicate(localTime);
+            IsComplete = completionPredicate(timerInformation);
             if (IsComplete) {
-                onComplete?.Invoke(localTime);
+                onComplete?.Invoke(timerInformation);
             }
             return IsComplete;
         }

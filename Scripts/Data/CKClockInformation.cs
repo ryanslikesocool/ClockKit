@@ -2,13 +2,13 @@ using System;
 
 namespace ClockKit {
     /// <summary>
-    /// Information about the current update.
+    /// Information about a clock update.
     /// </summary>
-    public readonly struct ClockInformation {
+    public readonly struct CKClockInformation : ICKTimeInformation {
         /// <summary>
         /// The queue that the information comes from.
         /// </summary>
-        public readonly Queue queue;
+        public readonly CKQueue queue;
 
         /// <summary>
         /// The queue's current time.
@@ -25,7 +25,7 @@ namespace ClockKit {
         /// </summary>
         public readonly uint updateCount;
 
-        internal ClockInformation(Queue queue, float time, float deltaTime, uint updateCount) {
+        internal CKClockInformation(CKQueue queue, float time, float deltaTime, uint updateCount) {
             this.queue = queue;
             this.time = time;
             this.deltaTime = deltaTime;

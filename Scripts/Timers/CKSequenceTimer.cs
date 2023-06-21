@@ -1,21 +1,21 @@
 using System;
 
 namespace ClockKit {
-    public struct SequenceTimer : ITimer {
+    public struct CKSequenceTimer : ICKTimer {
         public delegate void CompletionCallback();
 
         public float StartTime { get; private set; }
 
-        public readonly Func<ITimer>[] timerBuilders;
+        public readonly Func<ICKTimer>[] timerBuilders;
 
-        public ITimer ActiveTimer { get; private set; }
+        public ICKTimer ActiveTimer { get; private set; }
         public int ActiveTimerIndex { get; private set; }
 
         public readonly CompletionCallback onComplete;
 
         public bool IsComplete { get; private set; }
 
-        public SequenceTimer(float startTime, Func<ITimer>[] timerBuilders, CompletionCallback onComplete) {
+        public CKSequenceTimer(float startTime, Func<ICKTimer>[] timerBuilders, CompletionCallback onComplete) {
             this.StartTime = startTime;
             this.timerBuilders = timerBuilders;
             this.onComplete = onComplete;
@@ -24,7 +24,7 @@ namespace ClockKit {
             this.IsComplete = false;
         }
 
-        public bool OnUpdate(in ClockInformation information) {
+        public bool OnUpdate(in CKClockInformation information) {
             if (IsComplete) {
                 return true;
             }

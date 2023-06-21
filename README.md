@@ -16,68 +16,73 @@ ClockKit will automatically create a game object and attach scripts the first ti
 
 ### Essentials
 
-\- __Clock__\
-The static `Clock` class provides access to most functionality, including:
+\- __CKClock__\
+The static `CKClock` class provides access to most functionality, including:
 - starting and stopping timers
 - adding and removing update delegates
 
 \- __Queues__\
-Three `Queue`s are provided by default, each associated with a Unity-provided update loop.
+Three `CKQueue`s are provided by default, each associated with a Unity-provided update loop.
 The Update queue is used by default unless otherwise specified.
 
 \- __Clock Information__\
-A `ClockInformation` struct is provided with essential current time information that can be used by both timers and delegates, including:
+A `CKClockInformation` struct is provided with essential current time information that can be used by both timers and delegates.\
+`CKClockInformation` includes:
 - queue
 - time
 - delta time
 - update count
 
+\- __Timer Information__\
+A `CKTimerInformation` struct is provided with essential current timer information that can be used in timer callbacks.
+`CKTimerInformation` can be created within a timer from `CKClockInformation` and the timer's local time.\
+`CKTimerInformation` includes:
+- queue
+- time
+- local time, relative to the start of the timer
+- delta time
+- update count
+
 ### Starting Timers
-The `Clock` class contains multiple functions and overloads to start timers.
+The `CKClock` class contains multiple functions and overloads to start timers.
 ```cs
-Clock.Delay(queue: Queue.Update, key: UUID.Create(), duration: 2.5f, onComplete: () => {
+CKClock.Delay(queue: Queue.Update, seconds: 2.5f, onComplete: () => {
     Debug.Log("2.5 seconds have passed.");
 })
 ```
 
-Each function provides overloads allowing omission of some values, such as the queue and key.
+Each function provides overloads allowing omission of some values, such as the queue.
 ```cs
 // uses Queue.Default
-Clock.Delay(key: UUID.Create(), duration: 2.5f, onComplete: () => { /* ... */ });
-
-// uses UUID.Create()
-Clock.Delay(queue: Queue.FixedUpdate, duration: 2.5f, onComplete: () => { /* ... */ });
-
-// uses Queue.Default and UUID.Create()
-Clock.Delay(duration: 2.5f, onComplete: () => { /* ... */ });
+CKClock.Delay(seconds: 2.5f, onComplete: () => { /* ... */ });
 ```
 
 ### Stopping Timers
-All `Clock` functions that start timers return a `UUID` object that can be used to stop the associated timer.
+All `CKClock` functions that start timers will return a `CKKey` object that can be used to stop the associated timer.
 ```cs
-UUID delayKey = Clock.Delay(duration: 2.5f, onComplete: () => {
+CKKey delayKey = CKClock.Delay(seconds: 2.5f, onComplete: () => {
     Debug.Log("2.5 seconds have passed.");
 });
 
-bool success = Clock.StopTimer(delayKey);
+bool success = CKClock.StopTimer(delayKey);
 ```
 The `StopTimer` function returns a `bool`, returning `true` if a timer associated with the key exists and was stopped, or `false` if there was no timer.
 
 By default, the `StopTimer` function will attempt to stop the timer on all queues.
-An overload is provided that allows a timer to be stopped on a certain `Queue`.
+An overload is provided that allows a timer to be stopped on a certain `CKQueue`.
 
 A `StopTimers` function is also provided to stop multiple timers at once.
 
 ### Custom Timers
-Implementing the `ITimer` or `IFixedDurationTimer` allows for timers with custom logic to be created.
+Implementing the `ICKTimer` or `ICKFixedDurationTimer` allows for timers with custom logic to be created.
 
 The timer interfaces have an `OnUpdate` function.  Return `true` to mark the timer as complete and stop it.
 ```cs
 // This example creates a timer that stops early if a value is true, or after certain amount of time has passed.
 
-public struct MyCustomTimer: IFixedDurationTimer {
-    public delegate bool CompletionPredicate(float elapsedTime);
-    public delegate void CompletionCallback(float elapsedTime);
+public struct MyCustomTimer: ICKFixedDurationTimer {
+    public delegate bool CompletionPredicate(in CKTimerInformation information);
+    public delegate void CompletionCallback(in CKTimerInformation information);
 
     public float StartTime { get; }
     public float Duration { get; }
@@ -95,7 +100,7 @@ public struct MyCustomTimer: IFixedDurationTimer {
         this.IsComplete = false;
     }
 
-    public bool OnUpdate(in ClockInformation information) {
+    public bool OnUpdate(in CKClockInformation information) {
         // Safeguard
         if (IsComplete) {
             return true;
@@ -104,8 +109,11 @@ public struct MyCustomTimer: IFixedDurationTimer {
         // Calcualate the "local time" of the timer
         float localTime = information.time - StartTime;
 
+        // Create relevant timer information for the callback
+        CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
+
         // Invoke the predicate
-        IsComplete = completionPredicate(localTime);
+        IsComplete = completionPredicate(timerInformation);
 
         if (IsComplete) {
             Debug.Log("Timer predicate returned true.");
@@ -115,7 +123,7 @@ public struct MyCustomTimer: IFixedDurationTimer {
         IsComplete |= localTime >= Duration;
 
         if (IsComplete) {
-            onComplete?.Invoke(localTime);
+            onComplete?.Invoke(timerInformation);
         }
         return IsComplete;
     }
@@ -129,7 +137,7 @@ MyCustomTimer.CompletionPredicate completionPredicate = _ => {
 };
 
 // Create the timer object
-ITimer customTimer = new MyCustomTimer(
+ICKTimer customTimer = new MyCustomTimer(
     startTime: Time.time,
     maxDuration: 5.0f,
     completionPredicate:
@@ -137,14 +145,15 @@ ITimer customTimer = new MyCustomTimer(
 );
 
 // Start the timer
-UUID customTimerKey = Clock.StartTimer(queue: Queue.LateUpdate, timer: customTimer);
+CKKey customTimerKey = CKClock.StartTimer(queue: Queue.LateUpdate, timer: customTimer);
 ```
 ... and stopped in the same way
 ```cs
-Clock.StopTimer(queue: Queue.LateUpdate, key: customTimerKey);
+CKClock.StopTimer(queue: Queue.LateUpdate, key: customTimerKey);
 ```
 
 ### With Other Packages
 ClockKit has optional support for another package.
 
 If [EaseKit](https://github.com/ryanslikesocool/EaseKit) (3.0.0 or later) is included in the project, convenience functions to start timers with easings and interpolators are enabled.
+If EaseKit 3.1.0 or later is included, additional convenience functions with Spring support are enabled.

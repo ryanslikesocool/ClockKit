@@ -23,6 +23,11 @@
             "name": "com.developedwithlove.easekit",
             "expression": "3.0.0",
             "define": "EASEKIT_3"
+        },
+        {
+            "name": "com.developedwithlove.easekit",
+            "expression": "3.1.0",
+            "define": "EASEKIT_3_1"
         }
     ],
     "noEngineReferences": false
