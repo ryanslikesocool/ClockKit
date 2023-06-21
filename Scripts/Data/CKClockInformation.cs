@@ -4,7 +4,7 @@ namespace ClockKit {
     /// <summary>
     /// Information about a clock update.
     /// </summary>
-    public readonly struct ClockInformation : ITimeInformation {
+    public readonly struct CKClockInformation : ICKTimeInformation {
         /// <summary>
         /// The queue that the information comes from.
         /// </summary>
@@ -25,7 +25,7 @@ namespace ClockKit {
         /// </summary>
         public readonly uint updateCount;
 
-        internal ClockInformation(CKQueue queue, float time, float deltaTime, uint updateCount) {
+        internal CKClockInformation(CKQueue queue, float time, float deltaTime, uint updateCount) {
             this.queue = queue;
             this.time = time;
             this.deltaTime = deltaTime;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ClockKit {
     public static partial class CKClock {
-        public delegate void UpdateCallback(in ClockInformation information);
+        public delegate void UpdateCallback(in CKClockInformation information);
 
         // MARK: - Add Delegate
 
@@ -21,7 +21,7 @@ namespace ClockKit {
             int priority,
             in UpdateCallback callback
         )
-            => ClockController.Shared.queues[queue].AddDelegate(priority, callback);
+            => CKClockController.Shared.queues[queue].AddDelegate(priority, callback);
 
         /// <summary>
         /// Add an update delegate.
@@ -62,12 +62,12 @@ namespace ClockKit {
         /// </summary>
         /// <param name="queue">The queue to update on.</param>
         /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
-        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="ICKUpdatable.OnUpdate(in CKClockInformation)"/> function will be called every update cycle.</param>
         /// <returns>The delegate key.</returns>
         public static CKKey AddDelegate(
             CKQueue queue,
             int priority,
-            in IUpdatable updatable
+            in ICKUpdatable updatable
         )
             => AddDelegate(queue, priority, updatable.OnUpdate);
 
@@ -75,11 +75,11 @@ namespace ClockKit {
         /// Add an update delegate.
         /// </summary>
         /// <param name="queue">The queue to update on.</param>
-        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="ICKUpdatable.OnUpdate(in CKClockInformation)"/> function will be called every update cycle.</param>
         /// <returns>The delegate key.</returns>
         public static CKKey AddDelegate(
             CKQueue queue,
-            in IUpdatable updatable
+            in ICKUpdatable updatable
         )
             => AddDelegate(queue, 0, updatable.OnUpdate);
 
@@ -87,21 +87,21 @@ namespace ClockKit {
         /// Add an update delegate.
         /// </summary>
         /// <param name="priority">The delegate priority.  Higher values are updated first.</param>
-        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="ICKUpdatable.OnUpdate(in CKClockInformation)"/> function will be called every update cycle.</param>
         /// <returns>The delegate key.</returns>
         public static CKKey AddDelegate(
             int priority,
-            in IUpdatable updatable
+            in ICKUpdatable updatable
         )
             => AddDelegate(CKQueue.Default, priority, updatable.OnUpdate);
 
         /// <summary>
         /// Add an update delegate.
         /// </summary>
-        /// <param name="updatable">The object to add to the queue.  Its <see cref="IUpdatable.OnUpdate(in ClockInformation)"/> function will be called every update cycle.</param>
+        /// <param name="updatable">The object to add to the queue.  Its <see cref="ICKUpdatable.OnUpdate(in CKClockInformation)"/> function will be called every update cycle.</param>
         /// <returns>The delegate key.</returns>
         public static CKKey AddDelegate(
-            in IUpdatable updatable
+            in ICKUpdatable updatable
         )
             => AddDelegate(CKQueue.Default, 0, updatable.OnUpdate);
 
@@ -114,7 +114,7 @@ namespace ClockKit {
         /// <param name="key">The delegate's key, provided by <c>Clock.AddDelegate</c>.</param>
         /// <returns><see langword="true"/> if the delegate was successfully removed; <see langword="false"/> otherwise.</returns>
         public static bool RemoveDelegate(CKQueue queue, in CKKey key)
-            => ClockController.Shared.queues[queue].RemoveDelegate(key);
+            => CKClockController.Shared.queues[queue].RemoveDelegate(key);
 
         /// <summary>
         /// Remove an update delegate with its key.  All queues will attempt to remove the delegate.
@@ -123,7 +123,7 @@ namespace ClockKit {
         /// <returns><see langword="true"/> if the delegate was successfully removed; <see langword="false"/> otherwise.</returns>
         public static bool RemoveDelegate(in CKKey key) {
             bool result = false;
-            foreach (CKQueue queue in ClockController.Shared.queues.Keys) {
+            foreach (CKQueue queue in CKClockController.Shared.queues.Keys) {
                 result |= RemoveDelegate(queue, key);
             }
             return result;
@@ -133,32 +133,32 @@ namespace ClockKit {
 
         public static CKKey StartTimer(
             CKQueue queue,
-            in ITimer timer
+            in ICKTimer timer
         )
-            => ClockController.Shared.queues[queue].StartTimer(timer);
+            => CKClockController.Shared.queues[queue].StartTimer(timer);
 
         public static CKKey StartTimer(
-            in ITimer timer
+            in ICKTimer timer
         )
             => StartTimer(CKQueue.Default, timer);
 
         // MARK: - Stop Timer
 
-        public static bool StopTimer(CKQueue queue, in CKKey key)
-            => ClockController.Shared.queues[queue].StopTimer(key);
+        public static bool StopTimer(CKQueue queue, in CKKey? key)
+            => CKClockController.Shared.queues[queue].StopTimer(key);
 
-        public static IEnumerable<bool> StopTimers(CKQueue queue, in CKKey[] keys)
+        public static IEnumerable<bool> StopTimers(CKQueue queue, in IEnumerable<CKKey> keys)
             => keys.Map(key => StopTimer(key));
 
-        public static bool StopTimer(in CKKey key) {
+        public static bool StopTimer(in CKKey? key) {
             bool result = false;
-            foreach (CKQueue queue in ClockController.Shared.queues.Keys) {
+            foreach (CKQueue queue in CKClockController.Shared.queues.Keys) {
                 result |= StopTimer(queue, key);
             }
             return result;
         }
 
-        public static IEnumerable<bool> StopTimers(in CKKey[] keys)
+        public static IEnumerable<bool> StopTimers(in IEnumerable<CKKey> keys)
             => keys.Map(key => StopTimer(key));
 
         // MARK: - Start Timer (Convenience)
@@ -167,11 +167,11 @@ namespace ClockKit {
 
         public static CKKey Update(
             CKQueue queue,
-            in IndefiniteUpdatingTimer.CompletionPredicate until,
-            in IndefiniteUpdatingTimer.UpdateCallback onUpdate,
-            in IndefiniteUpdatingTimer.CompletionCallback onComplete = null
+            in CKIndefiniteUpdatingTimer.CompletionPredicate until,
+            in CKIndefiniteUpdatingTimer.UpdateCallback onUpdate,
+            in CKIndefiniteUpdatingTimer.CompletionCallback onComplete = null
         ) {
-            ITimer timer = new IndefiniteUpdatingTimer(
+            ICKTimer timer = new CKIndefiniteUpdatingTimer(
                 startTime: Time.time,
                 onUpdate: onUpdate,
                 onComplete: onComplete,
@@ -181,9 +181,9 @@ namespace ClockKit {
         }
 
         public static CKKey Update(
-            in IndefiniteUpdatingTimer.CompletionPredicate until,
-            in IndefiniteUpdatingTimer.UpdateCallback onUpdate,
-            in IndefiniteUpdatingTimer.CompletionCallback onComplete = null
+            in CKIndefiniteUpdatingTimer.CompletionPredicate until,
+            in CKIndefiniteUpdatingTimer.UpdateCallback onUpdate,
+            in CKIndefiniteUpdatingTimer.CompletionCallback onComplete = null
         )
             => Update(CKQueue.Default, until, onUpdate, onComplete);
 
@@ -192,10 +192,10 @@ namespace ClockKit {
         public static CKKey Update(
             CKQueue queue,
             float duration,
-            in FiniteUpdatingTimer.UpdateCallback onUpdate,
-            in FiniteUpdatingTimer.CompletionCallback onComplete = null
+            in CKFiniteUpdatingTimer.UpdateCallback onUpdate,
+            in CKFiniteUpdatingTimer.CompletionCallback onComplete = null
         ) {
-            ITimer timer = new FiniteUpdatingTimer(
+            ICKTimer timer = new CKFiniteUpdatingTimer(
                 startTime: Time.time,
                 duration: duration,
                 onUpdate: onUpdate,
@@ -206,8 +206,8 @@ namespace ClockKit {
 
         public static CKKey Update(
             float duration,
-            in FiniteUpdatingTimer.UpdateCallback onUpdate,
-            in FiniteUpdatingTimer.CompletionCallback onComplete = null
+            in CKFiniteUpdatingTimer.UpdateCallback onUpdate,
+            in CKFiniteUpdatingTimer.CompletionCallback onComplete = null
         )
             => Update(CKQueue.Default, duration, onUpdate, onComplete);
 
@@ -221,7 +221,7 @@ namespace ClockKit {
         /// <returns>The timer key.</returns>
         public static CKKey Delay(
             CKQueue queue,
-            in FrameDelayingTimer.CompletionCallback onComplete
+            in CKFrameDelayingTimer.CompletionCallback onComplete
         )
             => Delay(queue, frames: 1, onComplete);
 
@@ -231,7 +231,7 @@ namespace ClockKit {
         /// <param name="onComplete">The function to call when the timer is complete.</param>
         /// <returns>The timer key.</returns>
         public static CKKey Delay(
-            in FrameDelayingTimer.CompletionCallback onComplete
+            in CKFrameDelayingTimer.CompletionCallback onComplete
         )
             => Delay(CKQueue.Default, frames: 1, onComplete);
 
@@ -240,9 +240,9 @@ namespace ClockKit {
         public static CKKey Delay(
             CKQueue queue,
             int frames,
-            in FrameDelayingTimer.CompletionCallback onComplete
+            in CKFrameDelayingTimer.CompletionCallback onComplete
         ) {
-            ITimer timer = new FrameDelayingTimer(
+            ICKTimer timer = new CKFrameDelayingTimer(
                 startTime: Time.time,
                 frames: frames,
                 onComplete: onComplete
@@ -252,7 +252,7 @@ namespace ClockKit {
 
         public static CKKey Delay(
             int frames,
-            in FrameDelayingTimer.CompletionCallback onComplete
+            in CKFrameDelayingTimer.CompletionCallback onComplete
         )
             => Delay(CKQueue.Default, frames, onComplete);
 
@@ -260,10 +260,10 @@ namespace ClockKit {
 
         public static CKKey Delay(
             CKQueue queue,
-            in IndefiniteDelayingTimer.CompletionPredicate until,
-            in IndefiniteDelayingTimer.CompletionCallback onComplete = null
+            in CKIndefiniteDelayingTimer.CompletionPredicate until,
+            in CKIndefiniteDelayingTimer.CompletionCallback onComplete = null
         ) {
-            ITimer timer = new IndefiniteDelayingTimer(
+            ICKTimer timer = new CKIndefiniteDelayingTimer(
                 startTime: Time.time,
                 onComplete: onComplete,
                 completionPredicate: until
@@ -272,8 +272,8 @@ namespace ClockKit {
         }
 
         public static CKKey Delay(
-            in IndefiniteDelayingTimer.CompletionPredicate until,
-            in IndefiniteDelayingTimer.CompletionCallback onComplete = null
+            in CKIndefiniteDelayingTimer.CompletionPredicate until,
+            in CKIndefiniteDelayingTimer.CompletionCallback onComplete = null
         )
             => Delay(CKQueue.Default, until, onComplete);
 
@@ -281,32 +281,32 @@ namespace ClockKit {
 
         public static CKKey Delay(
             CKQueue queue,
-            float duration,
-            in FiniteDelayingTimer.CompletionCallback onComplete
+            float seconds,
+            in CKFiniteDelayingTimer.CompletionCallback onComplete
         ) {
-            ITimer timer = new FiniteDelayingTimer(
+            ICKTimer timer = new CKFiniteDelayingTimer(
                 startTime: Time.time,
-                duration: duration,
+                duration: seconds,
                 onComplete: onComplete
             );
             return StartTimer(queue, timer);
         }
 
         public static CKKey Delay(
-            float duration,
-            in FiniteDelayingTimer.CompletionCallback onComplete
+            float seconds,
+            in CKFiniteDelayingTimer.CompletionCallback onComplete
         )
-            => Delay(CKQueue.Default, duration, onComplete);
+            => Delay(CKQueue.Default, seconds, onComplete);
 
         // MARK: Animate
 
         public static CKKey Animate<Value, Animation>(
             CKQueue queue,
             in Animation animation,
-            in FiniteAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            in FiniteAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
-        ) where Animation : IFiniteAnimation<Value> {
-            ITimer timer = new FiniteAnimationUpdatingTimer<Value, Animation>(
+            in CKFiniteAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            in CKFiniteAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+        ) where Animation : ICKFiniteAnimation<Value> {
+            ICKTimer timer = new CKFiniteAnimationUpdatingTimer<Value, Animation>(
                 startTime: Time.time,
                 animation: animation,
                 onUpdate: onUpdate,
@@ -317,18 +317,18 @@ namespace ClockKit {
 
         public static CKKey Animate<Value, Animation>(
             in Animation animation,
-            in FiniteAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            in FiniteAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
-        ) where Animation : IFiniteAnimation<Value>
+            in CKFiniteAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            in CKFiniteAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+        ) where Animation : ICKFiniteAnimation<Value>
             => Animate(CKQueue.Default, animation, onUpdate, onComplete);
 
         public static CKKey Animate<Value, Animation>(
             CKQueue queue,
             in Animation animation,
-            in CompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            in CompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
-        ) where Animation : ICompletableAnimation<Value> {
-            ITimer timer = new CompletableAnimationUpdatingTimer<Value, Animation>(
+            in CKCompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            in CKCompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+        ) where Animation : ICKCompletableAnimation<Value> {
+            ICKTimer timer = new CKCompletableAnimationUpdatingTimer<Value, Animation>(
                 startTime: Time.time,
                 animation: animation,
                 onUpdate: onUpdate,
@@ -339,19 +339,19 @@ namespace ClockKit {
 
         public static CKKey Animate<Value, Animation>(
             in Animation animation,
-            in CompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
-            in CompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
-        ) where Animation : ICompletableAnimation<Value>
+            in CKCompletableAnimationUpdatingTimer<Value, Animation>.UpdateCallback onUpdate,
+            in CKCompletableAnimationUpdatingTimer<Value, Animation>.CompletionCallback onComplete = null
+        ) where Animation : ICKCompletableAnimation<Value>
             => Animate(CKQueue.Default, animation, onUpdate, onComplete);
 
         // MARK: Sequence
 
         public static CKKey Sequence(
             CKQueue queue,
-            in Func<ITimer>[] timerBuilders,
-            in SequenceTimer.CompletionCallback onComplete = null
+            in Func<ICKTimer>[] timerBuilders,
+            in CKSequenceTimer.CompletionCallback onComplete = null
         ) {
-            ITimer timer = new SequenceTimer(
+            ICKTimer timer = new CKSequenceTimer(
                 startTime: Time.time,
                 timerBuilders: timerBuilders,
                 onComplete: onComplete
@@ -360,8 +360,8 @@ namespace ClockKit {
         }
 
         public static CKKey Sequence(
-            in Func<ITimer>[] timerBuilders,
-            in SequenceTimer.CompletionCallback onComplete = null
+            in Func<ICKTimer>[] timerBuilders,
+            in CKSequenceTimer.CompletionCallback onComplete = null
         )
             => Sequence(CKQueue.Default, timerBuilders, onComplete);
     }

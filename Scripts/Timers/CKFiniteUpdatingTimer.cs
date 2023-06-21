@@ -1,7 +1,7 @@
 using System;
 
 namespace ClockKit {
-    public struct FiniteUpdatingTimer : IFiniteTimer {
+    public struct CKFiniteUpdatingTimer : ICKFiniteTimer {
         public delegate void UpdateCallback(float localTime);
         public delegate void CompletionCallback();
 
@@ -13,9 +13,9 @@ namespace ClockKit {
 
         public bool IsComplete { get; private set; }
 
-        public FiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate) : this(startTime, duration, onUpdate, null) { }
+        public CKFiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate) : this(startTime, duration, onUpdate, null) { }
 
-        public FiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate, CompletionCallback onComplete) {
+        public CKFiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate, CompletionCallback onComplete) {
             this.StartTime = startTime;
             this.Duration = duration;
             this.onUpdate = onUpdate;
@@ -23,7 +23,7 @@ namespace ClockKit {
             this.IsComplete = false;
         }
 
-        public bool OnUpdate(in ClockInformation information) {
+        public bool OnUpdate(in CKClockInformation information) {
             if (IsComplete) {
                 return true;
             }

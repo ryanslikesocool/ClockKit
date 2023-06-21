@@ -4,7 +4,7 @@ namespace ClockKit {
     /// <summary>
     /// A fixed duration animation that evaluates a Unity AnimationCurve every step.
     /// </summary>
-    public readonly struct AnimationCurveAnimation : IFiniteAnimation<float> {
+    public readonly struct AnimationCurveAnimation : ICKFiniteAnimation<float> {
         public float Duration { get; }
         public readonly AnimationCurve animationCurve;
         private readonly float startTime;

@@ -9,7 +9,7 @@ namespace ClockKit {
     /// </summary>
     /// <seealso cref="Spring"/>
     /// <seealso cref="SpringTimer"/>
-    public struct SpringAnimation<Value> : ICompletableAnimation<Value> {
+    public struct CKSpringAnimation<Value> : ICKCompletableAnimation<Value> {
         public readonly Value start;
         public readonly Value end;
         private readonly IInterpolator<Value> interpolator;
@@ -18,59 +18,59 @@ namespace ClockKit {
 
         public bool IsComplete => state.IsComplete;
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Value start,
             in Value end
         ) : this(Spring.Default, start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             float initialVelocity,
             in Value start,
             in Value end
         ) : this(Spring.Default, initialVelocity, start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Spring spring,
             in Value start,
             in Value end
         ) : this(spring, EasingUtility.CreateInterpolator<Value>(), start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Spring spring,
             float initialVelocity,
             in Value start,
             in Value end
         ) : this(spring.CreateSolver(), initialVelocity, start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Spring spring,
             in IInterpolator<Value> interpolator,
             in Value start,
             in Value end
         ) : this(spring.CreateSolver(), interpolator, start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Spring.Solver solver,
             in IInterpolator<Value> interpolator,
             in Value start,
             in Value end
         ) : this(solver, solver.CreateState(0), interpolator, start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Spring.Solver solver,
             float initialVelocity,
             in Value start,
             in Value end
         ) : this(solver, solver.CreateState(initialVelocity), EasingUtility.CreateInterpolator<Value>(), start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Spring.Solver solver,
             in Spring.Solver.State state,
             in Value start,
             in Value end
         ) : this(solver, state, EasingUtility.CreateInterpolator<Value>(), start, end) { }
 
-        public SpringAnimation(
+        public CKSpringAnimation(
             in Spring.Solver solver,
             in Spring.Solver.State state,
             in IInterpolator<Value> interpolator,

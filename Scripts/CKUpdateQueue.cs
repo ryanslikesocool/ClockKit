@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Foundation;
 
 namespace ClockKit {
-    internal sealed class UpdateQueue {
+    internal sealed class CKUpdateQueue {
         public readonly CKQueue Queue;
 
-        private Dictionary<CKKey, ITimer> timers;
+        private Dictionary<CKKey, ICKTimer> timers;
         private Dictionary<CKKey, CKClock.UpdateCallback> delegates;
         private List<(int, CKKey)> updateOrder;
 
@@ -23,21 +22,21 @@ namespace ClockKit {
 
         // MARK: - Lifecycle
 
-        public UpdateQueue(CKQueue queue, float currentTime) {
+        public CKUpdateQueue(CKQueue queue, float currentTime) {
             this.Queue = queue;
 
             this.previousTime = currentTime;
             this.deltaTime = 0;
             this.updateCount = 0;
 
-            this.timers = new Dictionary<CKKey, ITimer>();
+            this.timers = new Dictionary<CKKey, ICKTimer>();
             this.delegates = new Dictionary<CKKey, CKClock.UpdateCallback>();
             this.updateOrder = new List<(int, CKKey)>();
 
             this.currentKey = CKKey.zero;
         }
 
-        ~UpdateQueue() {
+        ~CKUpdateQueue() {
             timers.Clear();
             delegates.Clear();
             updateOrder.Clear();
@@ -56,7 +55,7 @@ namespace ClockKit {
                 return;
             }
 
-            ClockInformation information = new ClockInformation(
+            CKClockInformation information = new CKClockInformation(
                 queue: Queue,
                 time: time,
                 deltaTime: deltaTime,
@@ -124,13 +123,17 @@ namespace ClockKit {
 
         // MARK: - Timers
 
-        public CKKey StartTimer(in ITimer timer) {
+        public CKKey StartTimer(in ICKTimer timer) {
             CKKey key = RetrieveNextKey();
             timers.Add(key, timer);
             return key;
         }
 
-        public bool StopTimer(in CKKey key)
-            => timers.Remove(key);
+        public bool StopTimer(in CKKey? key) {
+            if (key is CKKey _key) {
+                return timers.Remove(_key);
+            }
+            return false;
+        }
     }
 }

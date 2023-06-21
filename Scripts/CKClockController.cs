@@ -3,10 +3,10 @@ using Foundation;
 using UnityEngine;
 
 namespace ClockKit {
-    internal sealed class ClockController : AutoSingleton<ClockController> {
+    internal sealed class CKClockController : AutoSingleton<CKClockController> {
         // MARK: - Properties
 
-        internal Dictionary<CKQueue, UpdateQueue> queues = default;
+        internal Dictionary<CKQueue, CKUpdateQueue> queues = default;
 
         // MARK: - Lifecycle
 
@@ -14,10 +14,10 @@ namespace ClockKit {
             base.Awake();
 
             float time = Time.time;
-            queues = new Dictionary<CKQueue, UpdateQueue> {
-                { CKQueue.Update, new UpdateQueue(CKQueue.Update, time) },
-                { CKQueue.FixedUpdate, new UpdateQueue(CKQueue.FixedUpdate, time) },
-                { CKQueue.LateUpdate, new UpdateQueue(CKQueue.LateUpdate, time) },
+            queues = new Dictionary<CKQueue, CKUpdateQueue> {
+                { CKQueue.Update, new CKUpdateQueue(CKQueue.Update, time) },
+                { CKQueue.FixedUpdate, new CKUpdateQueue(CKQueue.FixedUpdate, time) },
+                { CKQueue.LateUpdate, new CKUpdateQueue(CKQueue.LateUpdate, time) },
             };
 
             gameObject.hideFlags = HideFlags.HideAndDontSave;

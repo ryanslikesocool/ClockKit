@@ -5,7 +5,7 @@ namespace ClockKit {
     /// <summary>
     /// Information about a timer update.
     /// </summary>
-    public readonly struct TimerInformation : ITimeInformation {
+    public readonly struct CKTimerInformation : ICKTimeInformation {
         /// <summary>
         /// The queue that the information comes from.
         /// </summary>
@@ -23,13 +23,13 @@ namespace ClockKit {
 
         public readonly float deltaTime;
 
-        public TimerInformation(CKQueue queue, float time, float localTime, float deltaTime) {
+        public CKTimerInformation(CKQueue queue, float time, float localTime, float deltaTime) {
             this.queue = queue;
             this.time = time;
             this.localTime = localTime;
             this.deltaTime = deltaTime;
         }
 
-        public TimerInformation(ClockInformation clockInformation, float localTime) : this(clockInformation.queue, clockInformation.time, localTime, clockInformation.deltaTime) { }
+        public CKTimerInformation(CKClockInformation clockInformation, float localTime) : this(clockInformation.queue, clockInformation.time, localTime, clockInformation.deltaTime) { }
     }
 }

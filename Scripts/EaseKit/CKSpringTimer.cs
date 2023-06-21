@@ -9,7 +9,7 @@ namespace ClockKit {
     /// </summary>
     /// <seealso cref="Spring"/>
     /// <seealso cref="SpringAnimation"/>
-    public struct SpringTimer : ITimer {
+    public struct CKSpringTimer : ITimer {
         public delegate void UpdateCallback(in Spring.Solver.State state);
         public delegate void CompletionCallback(in Spring.Solver.State state);
 
@@ -23,14 +23,14 @@ namespace ClockKit {
         private readonly Spring.Solver solver;
         private Spring.Solver.State state;
 
-        public SpringTimer(
+        public CKSpringTimer(
             float startTime,
             in Spring spring,
             UpdateCallback onUpdate,
             CompletionCallback onComplete = null
         ) : this(startTime, spring.CreateSolver(), onUpdate, onComplete) { }
 
-        public SpringTimer(
+        public CKSpringTimer(
             float startTime,
             in Spring spring,
             float initialVelocity,
@@ -38,14 +38,14 @@ namespace ClockKit {
             CompletionCallback onComplete = null
         ) : this(startTime, spring.CreateSolver(), initialVelocity, onUpdate, onComplete) { }
 
-        public SpringTimer(
+        public CKSpringTimer(
             float startTime,
             in Spring.Solver solver,
             UpdateCallback onUpdate,
             CompletionCallback onComplete = null
         ) : this(startTime, solver, 0, onUpdate, onComplete) { }
 
-        public SpringTimer(
+        public CKSpringTimer(
             float startTime,
             in Spring.Solver solver,
             float initialVelocity,
@@ -53,7 +53,7 @@ namespace ClockKit {
             CompletionCallback onComplete = null
         ) : this(startTime, solver, solver.CreateState(initialVelocity), onUpdate, onComplete) { }
 
-        public SpringTimer(
+        public CKSpringTimer(
             float startTime,
             in Spring.Solver solver,
             in Spring.Solver.State state,

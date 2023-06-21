@@ -1,5 +1,5 @@
 namespace ClockKit {
-    public struct CompletableAnimationUpdatingTimer<Value, Animation> : ITimer where Animation : ICompletableAnimation<Value> {
+    public struct CKCompletableAnimationUpdatingTimer<Value, Animation> : ICKTimer where Animation : ICKCompletableAnimation<Value> {
         public delegate void UpdateCallback(Value value);
         public delegate void CompletionCallback(Value value);
 
@@ -11,16 +11,16 @@ namespace ClockKit {
 
         public bool IsComplete => animation.IsComplete;
 
-        public CompletableAnimationUpdatingTimer(float startTime, in Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
+        public CKCompletableAnimationUpdatingTimer(float startTime, in Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
 
-        public CompletableAnimationUpdatingTimer(float startTime, in Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
+        public CKCompletableAnimationUpdatingTimer(float startTime, in Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
             this.StartTime = startTime;
             this.animation = animation;
             this.onUpdate = onUpdate;
             this.onComplete = onComplete;
         }
 
-        public bool OnUpdate(in ClockInformation information) {
+        public bool OnUpdate(in CKClockInformation information) {
             if (IsComplete) {
                 return true;
             }

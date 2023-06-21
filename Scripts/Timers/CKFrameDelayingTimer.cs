@@ -1,7 +1,7 @@
 using System;
 
 namespace ClockKit {
-    public struct FrameDelayingTimer : ITimer {
+    public struct CKFrameDelayingTimer : ICKTimer {
         public delegate void CompletionCallback(float localTime);
 
         public float StartTime { get; }
@@ -11,14 +11,14 @@ namespace ClockKit {
 
         public bool IsComplete { get; private set; }
 
-        public FrameDelayingTimer(float startTime, int frames, CompletionCallback onComplete) {
+        public CKFrameDelayingTimer(float startTime, int frames, CompletionCallback onComplete) {
             this.StartTime = startTime;
             this.Counter = frames;
             this.onComplete = onComplete;
             this.IsComplete = false;
         }
 
-        public bool OnUpdate(in ClockInformation information) {
+        public bool OnUpdate(in CKClockInformation information) {
             if (IsComplete) {
                 return true;
             }

@@ -4,5 +4,5 @@ namespace ClockKit {
     /// <summary>
     /// Information about the current clock.
     /// </summary>
-    public interface ITimeInformation { }
+    public interface ICKTimeInformation { }
 }
