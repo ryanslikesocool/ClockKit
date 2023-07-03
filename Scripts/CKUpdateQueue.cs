@@ -11,6 +11,8 @@ namespace ClockKit {
         private Dictionary<CKKey, CKClock.UpdateCallback> delegates;
         private List<(int, CKKey)> updateOrder;
 
+        private List<CKKey> removingDelegates;
+
         public bool IsEmpty => timers.Count == 0 && delegates.Count == 0;
 
         private float time;
@@ -33,6 +35,8 @@ namespace ClockKit {
             this.delegates = new Dictionary<CKKey, CKClock.UpdateCallback>();
             this.updateOrder = new List<(int, CKKey)>();
 
+            this.removingDelegates = new List<CKKey>();
+
             this.currentKey = CKKey.zero;
         }
 
@@ -40,9 +44,12 @@ namespace ClockKit {
             timers.Clear();
             delegates.Clear();
             updateOrder.Clear();
+            removingDelegates.Clear();
+
             timers = null;
             delegates = null;
             updateOrder = null;
+            removingDelegates = null;
         }
 
         public void Update(float currentTime) {
@@ -79,9 +86,32 @@ namespace ClockKit {
                     }
                 }
             }
+
+            FinalizeDelegateRemoval();
         }
 
         // MARK: - Utility
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void FinalizeDelegateRemoval() {
+            if (removingDelegates.IsEmpty()) {
+                return;
+            }
+
+            foreach (CKKey key in removingDelegates) {
+                RemoveDelegate(key);
+            }
+            removingDelegates.Clear();
+
+            ValidateUpdateOrder();
+
+            void RemoveDelegate(CKKey key) {
+                delegates.Remove(key);
+                if (updateOrder.FirstIndex(pair => pair.Item2 == key).TryGetValue(out int index)) {
+                    updateOrder.RemoveAt(index);
+                }
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private CKKey RetrieveNextKey() {
@@ -115,14 +145,12 @@ namespace ClockKit {
             if (key is not CKKey _key) {
                 return false;
             }
-
-            bool result = delegates.ContainsKey(_key);
-            delegates.Remove(_key);
-            if (updateOrder.FirstIndex(pair => pair.Item2 == _key).TryGetValue(out int index)) {
-                updateOrder.RemoveAt(index);
+            if (!delegates.ContainsKey(_key)) {
+                return false;
             }
-            ValidateUpdateOrder();
-            return result;
+
+            removingDelegates.Add(_key);
+            return true;
         }
 
         // MARK: - Timers
@@ -137,7 +165,12 @@ namespace ClockKit {
             if (key is not CKKey _key) {
                 return false;
             }
-            return timers.Remove(_key);
+            if (!timers.ContainsKey(_key)) {
+                return false;
+            }
+
+            timers.Remove(_key);
+            return true;
         }
     }
 }
