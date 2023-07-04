@@ -187,17 +187,17 @@ namespace ClockKit {
         )
             => Update(CKQueue.Default, until, onUpdate, onComplete);
 
-        // MARK: Update For
+        // MARK: Update Seconds
 
         public static CKKey Update(
             CKQueue queue,
-            float duration,
+            float seconds,
             in CKFiniteUpdatingTimer.UpdateCallback onUpdate,
             in CKFiniteUpdatingTimer.CompletionCallback onComplete = null
         ) {
             ICKTimer timer = new CKFiniteUpdatingTimer(
                 startTime: Time.time,
-                duration: duration,
+                seconds: seconds,
                 onUpdate: onUpdate,
                 onComplete: onComplete
             );
@@ -205,11 +205,35 @@ namespace ClockKit {
         }
 
         public static CKKey Update(
-            float duration,
+            float seconds,
             in CKFiniteUpdatingTimer.UpdateCallback onUpdate,
             in CKFiniteUpdatingTimer.CompletionCallback onComplete = null
         )
-            => Update(CKQueue.Default, duration, onUpdate, onComplete);
+            => Update(CKQueue.Default, seconds: seconds, onUpdate, onComplete);
+
+        // MARK: Update Frames
+
+        public static CKKey Update(
+            CKQueue queue,
+            int frames,
+            in CKFrameUpdatingTimer.UpdateCallback onUpdate,
+            in CKFrameUpdatingTimer.CompletionCallback onComplete = null
+        ) {
+            ICKTimer timer = new CKFrameUpdatingTimer(
+                startTime: Time.time,
+                frames: frames,
+                onUpdate: onUpdate,
+                onComplete: onComplete
+            );
+            return StartTimer(queue, timer);
+        }
+
+        public static CKKey Update(
+            int frames,
+            in CKFrameUpdatingTimer.UpdateCallback onUpdate,
+            in CKFrameUpdatingTimer.CompletionCallback onComplete = null
+        )
+            => Update(CKQueue.Default, frames: frames, onUpdate, onComplete);
 
         // MARK: Delay
 

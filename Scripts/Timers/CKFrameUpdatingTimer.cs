@@ -1,23 +1,21 @@
 using System;
 
 namespace ClockKit {
-    public struct CKFiniteUpdatingTimer : ICKFiniteTimer {
-        public delegate void UpdateCallback(in CKTimerInformation information);
-        public delegate void CompletionCallback();
+    public struct CKFrameUpdatingTimer : ICKTimer {
+        public delegate void UpdateCallback(in CKTimerInformation timerInformation);
+        public delegate void CompletionCallback(in CKTimerInformation timerInformation);
 
         public float StartTime { get; }
-        public float Duration { get; }
+        public int Counter { get; private set; }
 
         public readonly UpdateCallback onUpdate;
         public readonly CompletionCallback onComplete;
 
         public bool IsComplete { get; private set; }
 
-        public CKFiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate) : this(startTime, duration, onUpdate, null) { }
-
-        public CKFiniteUpdatingTimer(float startTime, float seconds, UpdateCallback onUpdate, CompletionCallback onComplete) {
+        public CKFrameUpdatingTimer(float startTime, int frames, UpdateCallback onUpdate, CompletionCallback onComplete = null) {
             this.StartTime = startTime;
-            this.Duration = seconds;
+            this.Counter = frames;
             this.onUpdate = onUpdate;
             this.onComplete = onComplete;
             this.IsComplete = false;
@@ -28,14 +26,16 @@ namespace ClockKit {
                 return true;
             }
 
+            Counter -= 1;
+
             float localTime = information.time - StartTime;
-
             CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
-            onUpdate?.Invoke(timerInformation);
 
-            IsComplete = localTime >= Duration;
+            onUpdate(timerInformation);
+
+            IsComplete = Counter <= 0;
             if (IsComplete) {
-                onComplete?.Invoke();
+                onComplete?.Invoke(timerInformation);
             }
             return IsComplete;
         }
