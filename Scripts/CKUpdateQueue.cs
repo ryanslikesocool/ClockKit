@@ -14,7 +14,7 @@ namespace ClockKit {
 		private List<(int, CKKey, CKClock.UpdateCallback)> insertingDelegates;
 		private List<CKKey> removingDelegates;
 
-		public bool IsEmpty => timers.Count == 0 && delegates.Count == 0;
+		public bool IsEmpty => TimerCount == 0 && DelegateCount == 0;
 
 		private float time;
 		private float previousTime;
@@ -22,6 +22,9 @@ namespace ClockKit {
 		private uint updateCount;
 
 		private CKKey currentKey;
+
+		public int TimerCount => timers.Count;
+		public int DelegateCount => delegates.Count;
 
 		// MARK: - Lifecycle
 
@@ -43,6 +46,12 @@ namespace ClockKit {
 		}
 
 		~CKUpdateQueue() {
+			UnityEngine.Debug.Log($"deinit queue {Queue}");
+
+			this.previousTime = 0;
+			this.deltaTime = 0;
+			this.updateCount = 0;
+
 			timers.Clear();
 			delegates.Clear();
 			updateOrder.Clear();
@@ -173,6 +182,12 @@ namespace ClockKit {
 			return true;
 		}
 
+		public void RemoveAllDelegates() {
+			foreach (CKKey key in delegates.Keys) {
+				RemoveDelegate(key);
+			}
+		}
+
 		// MARK: - Timers
 
 		public CKKey StartTimer(in ICKTimer timer) {
@@ -191,6 +206,13 @@ namespace ClockKit {
 
 			timers.Remove(_key);
 			return true;
+		}
+
+		public void StopAllTimers() {
+			CKKey[] timerKeys = timers.Keys.ToArray();
+			foreach (CKKey key in timerKeys) {
+				StopTimer(key);
+			}
 		}
 	}
 }
