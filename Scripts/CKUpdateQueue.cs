@@ -4,173 +4,195 @@ using System.Runtime.CompilerServices;
 using Foundation;
 
 namespace ClockKit {
-    internal sealed class CKUpdateQueue {
-        public readonly CKQueue Queue;
+	internal sealed class CKUpdateQueue {
+		public readonly CKQueue Queue;
 
-        private Dictionary<CKKey, ICKTimer> timers;
-        private Dictionary<CKKey, CKClock.UpdateCallback> delegates;
-        private List<(int, CKKey)> updateOrder;
+		private Dictionary<CKKey, ICKTimer> timers;
+		private Dictionary<CKKey, CKClock.UpdateCallback> delegates;
+		private List<(int, CKKey)> updateOrder;
 
-        private List<CKKey> removingDelegates;
+		private List<(int, CKKey, CKClock.UpdateCallback)> insertingDelegates;
+		private List<CKKey> removingDelegates;
 
-        public bool IsEmpty => timers.Count == 0 && delegates.Count == 0;
+		public bool IsEmpty => timers.Count == 0 && delegates.Count == 0;
 
-        private float time;
-        private float previousTime;
-        private float deltaTime;
-        private uint updateCount;
+		private float time;
+		private float previousTime;
+		private float deltaTime;
+		private uint updateCount;
 
-        private CKKey currentKey;
+		private CKKey currentKey;
 
-        // MARK: - Lifecycle
+		// MARK: - Lifecycle
 
-        public CKUpdateQueue(CKQueue queue, float currentTime) {
-            this.Queue = queue;
+		public CKUpdateQueue(CKQueue queue, float currentTime) {
+			this.Queue = queue;
 
-            this.previousTime = currentTime;
-            this.deltaTime = 0;
-            this.updateCount = 0;
+			this.previousTime = currentTime;
+			this.deltaTime = 0;
+			this.updateCount = 0;
 
-            this.timers = new Dictionary<CKKey, ICKTimer>();
-            this.delegates = new Dictionary<CKKey, CKClock.UpdateCallback>();
-            this.updateOrder = new List<(int, CKKey)>();
+			this.timers = new Dictionary<CKKey, ICKTimer>();
+			this.delegates = new Dictionary<CKKey, CKClock.UpdateCallback>();
+			this.updateOrder = new List<(int, CKKey)>();
 
-            this.removingDelegates = new List<CKKey>();
+			this.insertingDelegates = new List<(int, CKKey, CKClock.UpdateCallback)>();
+			this.removingDelegates = new List<CKKey>();
 
-            this.currentKey = CKKey.zero;
-        }
+			this.currentKey = CKKey.zero;
+		}
 
-        ~CKUpdateQueue() {
-            timers.Clear();
-            delegates.Clear();
-            updateOrder.Clear();
-            removingDelegates.Clear();
+		~CKUpdateQueue() {
+			timers.Clear();
+			delegates.Clear();
+			updateOrder.Clear();
+			insertingDelegates.Clear();
+			removingDelegates.Clear();
 
-            timers = null;
-            delegates = null;
-            updateOrder = null;
-            removingDelegates = null;
-        }
+			timers = null;
+			delegates = null;
+			updateOrder = null;
+			insertingDelegates = null;
+			removingDelegates = null;
+		}
 
-        public void Update(float currentTime) {
-            deltaTime = currentTime - previousTime;
-            time = currentTime;
-            previousTime = currentTime;
-            updateCount++;
+		public void Update(float currentTime) {
+			deltaTime = currentTime - previousTime;
+			time = currentTime;
+			previousTime = currentTime;
+			updateCount++;
 
-            if (IsEmpty) {
-                return;
-            }
+			if (IsEmpty) {
+				return;
+			}
 
-            CKClockInformation information = new CKClockInformation(
-                queue: Queue,
-                time: time,
-                deltaTime: deltaTime,
-                updateCount: updateCount
-            );
+			CKClockInformation information = new CKClockInformation(
+				queue: Queue,
+				time: time,
+				deltaTime: deltaTime,
+				updateCount: updateCount
+			);
 
-            if (updateOrder.Count > 0) {
-                foreach ((_, CKKey key) in updateOrder) {
-                    delegates[key](information);
-                }
-            }
+			if (updateOrder.Count > 0) {
+				foreach ((_, CKKey key) in updateOrder) {
+					delegates[key](information);
+				}
+			}
 
-            if (timers.Count > 0) {
-                CKKey[] timerKeys = timers.Keys.ToArray();
-                foreach (CKKey key in timerKeys) {
-                    if (timers.ContainsKey(key)) {
-                        bool isComplete = timers[key].OnUpdate(information);
-                        if (isComplete) {
-                            StopTimer(key);
-                        }
-                    }
-                }
-            }
+			if (timers.Count > 0) {
+				CKKey[] timerKeys = timers.Keys.ToArray();
+				foreach (CKKey key in timerKeys) {
+					if (timers.ContainsKey(key)) {
+						bool isComplete = timers[key].OnUpdate(information);
+						if (isComplete) {
+							StopTimer(key);
+						}
+					}
+				}
+			}
 
-            FinalizeDelegateRemoval();
-        }
+			FinalizeDelegateInsertion();
+			FinalizeDelegateRemoval();
+		}
 
-        // MARK: - Utility
+		// MARK: - Utility
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void FinalizeDelegateRemoval() {
-            if (removingDelegates.IsEmpty()) {
-                return;
-            }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void FinalizeDelegateInsertion() {
+			if (insertingDelegates.IsEmpty()) {
+				return;
+			}
 
-            foreach (CKKey key in removingDelegates) {
-                RemoveDelegate(key);
-            }
-            removingDelegates.Clear();
+			foreach ((int priority, CKKey key, CKClock.UpdateCallback callback) in insertingDelegates) {
+				InsertDelegate(priority, key, callback);
+			}
+			insertingDelegates.Clear();
 
-            ValidateUpdateOrder();
+			ValidateUpdateOrder();
 
-            void RemoveDelegate(CKKey key) {
-                delegates.Remove(key);
-                if (updateOrder.FirstIndex(pair => pair.Item2 == key).TryGetValue(out int index)) {
-                    updateOrder.RemoveAt(index);
-                }
-            }
-        }
+			void InsertDelegate(int priority, CKKey key, CKClock.UpdateCallback callback) {
+				delegates.Add(key, callback);
+				updateOrder.Add((priority, key));
+			}
+		}
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private CKKey RetrieveNextKey() {
-            CKKey initialKey = currentKey;
-            do {
-                currentKey += 1;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void FinalizeDelegateRemoval() {
+			if (removingDelegates.IsEmpty()) {
+				return;
+			}
 
-                if (initialKey == currentKey) {
-                    throw new System.ArgumentOutOfRangeException($"This Queue is full.  All ${((UInt64)(UInt32.MaxValue)) + 1} keys are occupied.");
-                }
-            } while (delegates.ContainsKey(currentKey) || timers.ContainsKey(currentKey));
-            return currentKey;
-        }
+			foreach (CKKey key in removingDelegates) {
+				RemoveDelegate(key);
+			}
+			removingDelegates.Clear();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ValidateUpdateOrder() {
-            updateOrder.Sort(new Comparison<(int, CKKey)>((i1, i2) => i2.Item1.CompareTo(i1.Item1)));
-        }
+			ValidateUpdateOrder();
 
-        // MARK: - Delegates
+			void RemoveDelegate(CKKey key) {
+				delegates.Remove(key);
+				if (updateOrder.FirstIndex(pair => pair.Item2 == key).TryGetValue(out int index)) {
+					updateOrder.RemoveAt(index);
+				}
+			}
+		}
 
-        public CKKey AddDelegate(int priority, in CKClock.UpdateCallback body) {
-            CKKey key = RetrieveNextKey();
-            delegates.Add(key, body);
-            updateOrder.Add((priority, key));
-            ValidateUpdateOrder();
-            return key;
-        }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private CKKey RetrieveNextKey() {
+			CKKey initialKey = currentKey;
+			do {
+				currentKey += 1;
 
-        public bool RemoveDelegate(CKKey? key) {
-            if (key is not CKKey _key) {
-                return false;
-            }
-            if (!delegates.ContainsKey(_key)) {
-                return false;
-            }
+				if (initialKey == currentKey) {
+					throw new System.ArgumentOutOfRangeException($"This Queue ('{Queue}') is full.  All ${((UInt64)(UInt32.MaxValue)) + 1} keys are occupied.");
+				}
+			} while (delegates.ContainsKey(currentKey) || timers.ContainsKey(currentKey));
+			return currentKey;
+		}
 
-            removingDelegates.Add(_key);
-            return true;
-        }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ValidateUpdateOrder() {
+			updateOrder.Sort(new Comparison<(int, CKKey)>((i1, i2) => i2.Item1.CompareTo(i1.Item1)));
+		}
 
-        // MARK: - Timers
+		// MARK: - Delegates
 
-        public CKKey StartTimer(in ICKTimer timer) {
-            CKKey key = RetrieveNextKey();
-            timers.Add(key, timer);
-            return key;
-        }
+		public CKKey AddDelegate(int priority, in CKClock.UpdateCallback body) {
+			CKKey key = RetrieveNextKey();
+			insertingDelegates.Add((priority, key, body));
+			return key;
+		}
 
-        public bool StopTimer(in CKKey? key) {
-            if (key is not CKKey _key) {
-                return false;
-            }
-            if (!timers.ContainsKey(_key)) {
-                return false;
-            }
+		public bool RemoveDelegate(CKKey? key) {
+			if (key is not CKKey _key) {
+				return false;
+			}
+			if (!delegates.ContainsKey(_key)) {
+				return false;
+			}
 
-            timers.Remove(_key);
-            return true;
-        }
-    }
+			removingDelegates.Add(_key);
+			return true;
+		}
+
+		// MARK: - Timers
+
+		public CKKey StartTimer(in ICKTimer timer) {
+			CKKey key = RetrieveNextKey();
+			timers.Add(key, timer);
+			return key;
+		}
+
+		public bool StopTimer(in CKKey? key) {
+			if (key is not CKKey _key) {
+				return false;
+			}
+			if (!timers.ContainsKey(_key)) {
+				return false;
+			}
+
+			timers.Remove(_key);
+			return true;
+		}
+	}
 }
