@@ -62,30 +62,28 @@ namespace ClockKit {
 			previousTime = currentTime;
 			updateCount++;
 
-			if (IsEmpty) {
-				return;
-			}
+			if (!IsEmpty) {
+				CKClockInformation information = new CKClockInformation(
+					queue: Queue,
+					time: time,
+					deltaTime: deltaTime,
+					updateCount: updateCount
+				);
 
-			CKClockInformation information = new CKClockInformation(
-				queue: Queue,
-				time: time,
-				deltaTime: deltaTime,
-				updateCount: updateCount
-			);
-
-			if (updateOrder.Count > 0) {
-				foreach ((_, CKKey key) in updateOrder) {
-					delegates[key](information);
+				if (updateOrder.Count > 0) {
+					foreach ((_, CKKey key) in updateOrder) {
+						delegates[key](information);
+					}
 				}
-			}
 
-			if (timers.Count > 0) {
-				CKKey[] timerKeys = timers.Keys.ToArray();
-				foreach (CKKey key in timerKeys) {
-					if (timers.ContainsKey(key)) {
-						bool isComplete = timers[key].OnUpdate(information);
-						if (isComplete) {
-							StopTimer(key);
+				if (timers.Count > 0) {
+					CKKey[] timerKeys = timers.Keys.ToArray();
+					foreach (CKKey key in timerKeys) {
+						if (timers.ContainsKey(key)) {
+							bool isComplete = timers[key].OnUpdate(information);
+							if (isComplete) {
+								StopTimer(key);
+							}
 						}
 					}
 				}
