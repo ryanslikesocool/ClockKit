@@ -46,8 +46,6 @@ namespace ClockKit {
 		}
 
 		~CKUpdateQueue() {
-			UnityEngine.Debug.Log($"deinit queue {Queue}");
-
 			this.previousTime = 0;
 			this.deltaTime = 0;
 			this.updateCount = 0;
