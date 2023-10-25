@@ -168,6 +168,13 @@ namespace ClockKit {
 			return key;
 		}
 
+		public bool HasDelegate(in CKKey? key) {
+			if (key is not CKKey _key) {
+				return false;
+			}
+			return delegates.ContainsKey(_key);
+		}
+
 		public bool RemoveDelegate(CKKey? key) {
 			if (key is not CKKey _key) {
 				return false;
@@ -192,6 +199,13 @@ namespace ClockKit {
 			CKKey key = RetrieveNextKey();
 			timers.Add(key, timer);
 			return key;
+		}
+
+		public bool HasTimer(in CKKey? key) {
+			if (key is not CKKey _key) {
+				return false;
+			}
+			return timers.ContainsKey(_key);
 		}
 
 		public bool StopTimer(in CKKey? key) {

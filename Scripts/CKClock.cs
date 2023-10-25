@@ -105,6 +105,20 @@ namespace ClockKit {
 		)
 			=> AddDelegate(CKQueue.Default, 0, updatable.OnUpdate);
 
+		// MARK: - Has Delegate
+
+		public static bool HasDelegate(
+			CKQueue queue,
+			in CKKey? key
+		)
+			=> CKClockController.Shared.queues[queue].HasDelegate(key);
+
+		public static IEnumerable<bool> HasDelegates(
+			CKQueue queue,
+			IEnumerable<CKKey> keys
+		)
+			=> keys.Map(key => HasDelegate(queue, key));
+
 		// MARK: - Remove Delegate
 
 		/// <summary>
@@ -113,7 +127,10 @@ namespace ClockKit {
 		/// <param name="queue">The queue the delegate was added to.</param>
 		/// <param name="key">The delegate's key, provided by <c>Clock.AddDelegate</c>.</param>
 		/// <returns><see langword="true"/> if the delegate was successfully removed; <see langword="false"/> otherwise.</returns>
-		public static bool RemoveDelegate(CKQueue queue, in CKKey? key)
+		public static bool RemoveDelegate(
+			CKQueue queue,
+			in CKKey? key
+		)
 			=> CKClockController.Shared.queues[queue].RemoveDelegate(key);
 
 		/// <summary>
@@ -133,7 +150,9 @@ namespace ClockKit {
 		/// Remove all delegates from a given queue.
 		/// </summary>
 		/// <param name="queue">The queue to remove all delegates from.</param>
-		public static void RemoveAllDelegates(CKQueue queue)
+		public static void RemoveAllDelegates(
+			CKQueue queue
+		)
 			=> CKClockController.Shared.queues[queue].RemoveAllDelegates();
 
 		/// <summary>
@@ -169,6 +188,18 @@ namespace ClockKit {
 		)
 			=> StartTimer(CKQueue.Default, timer);
 
+		// MARK: - Has Timer
+
+		public static bool HasTimer(
+			CKQueue queue,
+			in CKKey? key
+		) => CKClockController.Shared.queues[queue].HasTimer(key);
+
+		public static IEnumerable<bool> HasTimers(
+			CKQueue queue,
+			IEnumerable<CKKey> keys
+		) => keys.Map(key => HasTimer(queue, key));
+
 		// MARK: - Stop Timer
 
 		/// <summary>
@@ -187,7 +218,16 @@ namespace ClockKit {
 		/// <param name="keys">The timer keys to stop.</param>
 		/// <returns>A collection of <see langword="bool"/>s, indicating whether the timer associated with a key at that index was stopped or not.</returns>
 		public static IEnumerable<bool> StopTimers(CKQueue queue, in IEnumerable<CKKey> keys)
-			=> keys.Map(key => StopTimer(key));
+			=> keys.Map(key => StopTimer(queue, key));
+
+		/// <summary>
+		/// Stop multiple timers on the given queue.
+		/// </summary>
+		/// <param name="queue">The queue to stop timers on.</param>
+		/// <param name="keys">The timer keys to stop.</param>
+		/// <returns>A collection of <see langword="bool"/>s, indicating whether the timer associated with a key at that index was stopped or not.</returns>
+		public static IEnumerable<bool> StopTimers(CKQueue queue, in IEnumerable<CKKey?> keys)
+			=> keys.Map(key => StopTimer(queue, key));
 
 		/// <summary>
 		/// Stop timers with the given key on all queues.
@@ -208,6 +248,14 @@ namespace ClockKit {
 		/// <param name="keys">The timer keys to stop.</param>
 		/// <returns>A collection of <see langword="bool"/>s, indicating whether the timer associated with a key at that index was stopped on any queue or not.</returns>
 		public static IEnumerable<bool> StopTimers(in IEnumerable<CKKey> keys)
+			=> keys.Map(key => StopTimer(key));
+
+		/// <summary>
+		/// Stop multiple timers on all queues.
+		/// </summary>
+		/// <param name="keys">The timer keys to stop.</param>
+		/// <returns>A collection of <see langword="bool"/>s, indicating whether the timer associated with a key at that index was stopped on any queue or not.</returns>
+		public static IEnumerable<bool> StopTimers(in IEnumerable<CKKey?> keys)
 			=> keys.Map(key => StopTimer(key));
 
 		/// <summary>

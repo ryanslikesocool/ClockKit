@@ -1,43 +1,41 @@
 using System;
 
 namespace ClockKit {
-    public struct CKFiniteUpdatingTimer : ICKFiniteTimer {
-        public delegate void UpdateCallback(in CKTimerInformation information);
-        public delegate void CompletionCallback();
+	public struct CKFiniteUpdatingTimer : ICKFiniteTimer {
+		public delegate void UpdateCallback(in CKTimerInformation information);
+		public delegate void CompletionCallback();
 
-        public float StartTime { get; }
-        public float Duration { get; }
+		public float StartTime { get; }
+		public float Duration { get; }
 
-        public readonly UpdateCallback onUpdate;
-        public readonly CompletionCallback onComplete;
+		public readonly UpdateCallback onUpdate;
+		public readonly CompletionCallback onComplete;
 
-        public bool IsComplete { get; private set; }
+		public bool IsComplete { get; private set; }
 
-        public CKFiniteUpdatingTimer(float startTime, float duration, UpdateCallback onUpdate) : this(startTime, duration, onUpdate, null) { }
+		public CKFiniteUpdatingTimer(float startTime, float seconds, UpdateCallback onUpdate, CompletionCallback onComplete = null) {
+			this.StartTime = startTime;
+			this.Duration = seconds;
+			this.onUpdate = onUpdate;
+			this.onComplete = onComplete;
+			this.IsComplete = false;
+		}
 
-        public CKFiniteUpdatingTimer(float startTime, float seconds, UpdateCallback onUpdate, CompletionCallback onComplete) {
-            this.StartTime = startTime;
-            this.Duration = seconds;
-            this.onUpdate = onUpdate;
-            this.onComplete = onComplete;
-            this.IsComplete = false;
-        }
+		public bool OnUpdate(in CKClockInformation information) {
+			if (IsComplete) {
+				return true;
+			}
 
-        public bool OnUpdate(in CKClockInformation information) {
-            if (IsComplete) {
-                return true;
-            }
+			float localTime = information.time - StartTime;
 
-            float localTime = information.time - StartTime;
+			CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
+			onUpdate?.Invoke(timerInformation);
 
-            CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
-            onUpdate?.Invoke(timerInformation);
-
-            IsComplete = localTime >= Duration;
-            if (IsComplete) {
-                onComplete?.Invoke();
-            }
-            return IsComplete;
-        }
-    }
+			IsComplete = localTime >= Duration;
+			if (IsComplete) {
+				onComplete?.Invoke();
+			}
+			return IsComplete;
+		}
+	}
 }
