@@ -342,9 +342,31 @@ namespace ClockKit {
 		}
 
 		public static CKKey Update(
+			CKQueue queue,
+			int frames,
+			in CKFrameUpdatingTimer.UpdateCallback onUpdate,
+			in CKFrameUpdatingTimer.SimpleCompletionCallback onComplete
+		) {
+			ICKTimer timer = new CKFrameUpdatingTimer(
+				startTime: Time.time,
+				frames: frames,
+				onUpdate: onUpdate,
+				onComplete: onComplete
+			);
+			return StartTimer(queue, timer);
+		}
+
+		public static CKKey Update(
 			int frames,
 			in CKFrameUpdatingTimer.UpdateCallback onUpdate,
 			in CKFrameUpdatingTimer.CompletionCallback onComplete = null
+		)
+			=> Update(CKQueue.Default, frames: frames, onUpdate, onComplete);
+
+		public static CKKey Update(
+			int frames,
+			in CKFrameUpdatingTimer.UpdateCallback onUpdate,
+			in CKFrameUpdatingTimer.SimpleCompletionCallback onComplete
 		)
 			=> Update(CKQueue.Default, frames: frames, onUpdate, onComplete);
 
@@ -365,10 +387,32 @@ namespace ClockKit {
 		/// <summary>
 		/// Delays a function call for a single update cycle (normally a single frame).
 		/// </summary>
+		/// <param name="queue">The queue to delay on.</param>
+		/// <param name="onComplete">The function to call when the timer is complete.</param>
+		/// <returns>The timer key.</returns>
+		public static CKKey Delay(
+			CKQueue queue,
+			in CKFrameDelayingTimer.SimpleCompletionCallback onComplete
+		)
+			=> Delay(queue, frames: 1, onComplete);
+
+		/// <summary>
+		/// Delays a function call for a single update cycle (normally a single frame).
+		/// </summary>
 		/// <param name="onComplete">The function to call when the timer is complete.</param>
 		/// <returns>The timer key.</returns>
 		public static CKKey Delay(
 			in CKFrameDelayingTimer.CompletionCallback onComplete
+		)
+			=> Delay(CKQueue.Default, frames: 1, onComplete);
+
+		/// <summary>
+		/// Delays a function call for a single update cycle (normally a single frame).
+		/// </summary>
+		/// <param name="onComplete">The function to call when the timer is complete.</param>
+		/// <returns>The timer key.</returns>
+		public static CKKey Delay(
+			in CKFrameDelayingTimer.SimpleCompletionCallback onComplete
 		)
 			=> Delay(CKQueue.Default, frames: 1, onComplete);
 
@@ -388,8 +432,27 @@ namespace ClockKit {
 		}
 
 		public static CKKey Delay(
+			CKQueue queue,
+			int frames,
+			in CKFrameDelayingTimer.SimpleCompletionCallback onComplete
+		) {
+			ICKTimer timer = new CKFrameDelayingTimer(
+				startTime: Time.time,
+				frames: frames,
+				onComplete: onComplete
+			);
+			return StartTimer(queue, timer);
+		}
+
+		public static CKKey Delay(
 			int frames,
 			in CKFrameDelayingTimer.CompletionCallback onComplete
+		)
+			=> Delay(CKQueue.Default, frames, onComplete);
+
+		public static CKKey Delay(
+			int frames,
+			in CKFrameDelayingTimer.SimpleCompletionCallback onComplete
 		)
 			=> Delay(CKQueue.Default, frames, onComplete);
 
