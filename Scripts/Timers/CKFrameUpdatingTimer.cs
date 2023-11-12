@@ -2,8 +2,8 @@ using System;
 
 namespace ClockKit {
 	public struct CKFrameUpdatingTimer : ICKTimer {
-		public delegate void UpdateCallback(in CKTimerInformation timerInformation);
-		public delegate void CompletionCallback(in CKTimerInformation timerInformation);
+		public delegate void UpdateCallback(in CKInstant instant);
+		public delegate void CompletionCallback(in CKInstant instant);
 		public delegate void SimpleCompletionCallback();
 
 		public float StartTime { get; }
@@ -23,23 +23,29 @@ namespace ClockKit {
 		}
 
 		public CKFrameUpdatingTimer(float startTime, int frames, UpdateCallback onUpdate, SimpleCompletionCallback onComplete)
-			: this(startTime, frames, onUpdate, (in CKTimerInformation _) => onComplete()) { }
+			: this(startTime, frames, onUpdate, (in CKInstant _) => onComplete()) { }
 
-		public bool OnUpdate(in CKClockInformation information) {
+		public bool OnUpdate(in CKInstant instant) {
 			if (IsComplete) {
 				return true;
 			}
 
 			Counter -= 1;
 
-			float localTime = information.time - StartTime;
-			CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
+			float localTime = instant.localTime - StartTime;
 
-			onUpdate(timerInformation);
+			CKInstant timerInstant = new CKInstant(
+				instant.queue,
+				localTime,
+				instant.deltaTime,
+				instant.updateCount
+			);
+
+			onUpdate(timerInstant);
 
 			IsComplete = Counter <= 0;
 			if (IsComplete) {
-				onComplete?.Invoke(timerInformation);
+				onComplete?.Invoke(timerInstant);
 			}
 			return IsComplete;
 		}

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ClockKit {
 	public static partial class CKClock {
-		public delegate void UpdateCallback(in CKClockInformation information);
+		public delegate void UpdateCallback(in CKInstant instant);
 
 		// MARK: - Add Delegate
 
@@ -62,7 +62,7 @@ namespace ClockKit {
 		/// </summary>
 		/// <param name="queue">The queue to update on.</param>
 		/// <param name="priority">The delegate priority.  Higher values are updated first.</param>
-		/// <param name="updatable">The object to add to the queue.  Its <see cref="ICKUpdatable.OnUpdate(in CKClockInformation)"/> function will be called every update cycle.</param>
+		/// <param name="updatable">The object to add to the queue.  Its <see cref="ICKUpdatable.OnUpdate(in CKInstant)"/> function will be called every update cycle.</param>
 		/// <returns>The delegate key.</returns>
 		public static CKKey AddDelegate(
 			CKQueue queue,

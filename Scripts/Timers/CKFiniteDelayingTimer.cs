@@ -18,12 +18,12 @@ namespace ClockKit {
 			this.IsComplete = false;
 		}
 
-		public bool OnUpdate(in CKClockInformation information) {
+		public bool OnUpdate(in CKInstant instant) {
 			if (IsComplete) {
 				return true;
 			}
 
-			float localTime = information.time - StartTime;
+			float localTime = instant.localTime - StartTime;
 
 			IsComplete = localTime >= Duration;
 			if (IsComplete) {

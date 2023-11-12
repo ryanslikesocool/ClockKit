@@ -1,37 +1,42 @@
 using System;
 
 namespace ClockKit {
-    public struct CKIndefiniteDelayingTimer : ICKTimer {
-        public delegate void CompletionCallback(in CKTimerInformation information);
-        public delegate bool CompletionPredicate(in CKTimerInformation information);
+	public struct CKIndefiniteDelayingTimer : ICKTimer {
+		public delegate void CompletionCallback(in CKInstant instant);
+		public delegate bool CompletionPredicate(in CKInstant instant);
 
-        public float StartTime { get; }
+		public float StartTime { get; }
 
-        public readonly CompletionCallback onComplete;
-        public readonly CompletionPredicate completionPredicate;
+		public readonly CompletionCallback onComplete;
+		public readonly CompletionPredicate completionPredicate;
 
-        public bool IsComplete { get; private set; }
+		public bool IsComplete { get; private set; }
 
-        public CKIndefiniteDelayingTimer(float startTime, CompletionCallback onComplete, CompletionPredicate completionPredicate) {
-            this.StartTime = startTime;
-            this.onComplete = onComplete;
-            this.completionPredicate = completionPredicate;
-            IsComplete = false;
-        }
+		public CKIndefiniteDelayingTimer(float startTime, CompletionCallback onComplete, CompletionPredicate completionPredicate) {
+			this.StartTime = startTime;
+			this.onComplete = onComplete;
+			this.completionPredicate = completionPredicate;
+			IsComplete = false;
+		}
 
-        public bool OnUpdate(in CKClockInformation information) {
-            if (IsComplete) {
-                return true;
-            }
+		public bool OnUpdate(in CKInstant instant) {
+			if (IsComplete) {
+				return true;
+			}
 
-            float localTime = information.time - StartTime;
-            CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
+			float localTime = instant.localTime - StartTime;
+			CKInstant timerInstant = new CKInstant(
+				instant.queue,
+				localTime,
+				instant.deltaTime,
+				instant.updateCount
+			);
 
-            IsComplete = completionPredicate(timerInformation);
-            if (IsComplete) {
-                onComplete?.Invoke(timerInformation);
-            }
-            return IsComplete;
-        }
-    }
+			IsComplete = completionPredicate(timerInstant);
+			if (IsComplete) {
+				onComplete?.Invoke(timerInstant);
+			}
+			return IsComplete;
+		}
+	}
 }

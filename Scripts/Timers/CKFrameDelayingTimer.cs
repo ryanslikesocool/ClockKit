@@ -2,7 +2,7 @@ using System;
 
 namespace ClockKit {
 	public struct CKFrameDelayingTimer : ICKTimer {
-		public delegate void CompletionCallback(in CKTimerInformation timerInformation);
+		public delegate void CompletionCallback(in CKInstant instant);
 		public delegate void SimpleCompletionCallback();
 
 		public float StartTime { get; }
@@ -20,9 +20,9 @@ namespace ClockKit {
 		}
 
 		public CKFrameDelayingTimer(float startTime, int frames, SimpleCompletionCallback onComplete)
-			: this(startTime, frames, (in CKTimerInformation _) => onComplete()) { }
+			: this(startTime, frames, (in CKInstant _) => onComplete()) { }
 
-		public bool OnUpdate(in CKClockInformation information) {
+		public bool OnUpdate(in CKInstant instant) {
 			if (IsComplete) {
 				return true;
 			}
@@ -32,10 +32,15 @@ namespace ClockKit {
 
 			IsComplete = Counter <= 0;
 			if (IsComplete) {
-				float localTime = information.time - StartTime;
+				float localTime = instant.localTime - StartTime;
 
-				CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
-				onComplete?.Invoke(timerInformation);
+				CKInstant timerInstant = new CKInstant(
+					instant.queue,
+					localTime,
+					instant.deltaTime,
+					instant.updateCount
+				);
+				onComplete?.Invoke(timerInstant);
 			}
 			return IsComplete;
 		}

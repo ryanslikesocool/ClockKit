@@ -16,7 +16,7 @@ namespace ClockKit {
 
 		public bool IsEmpty => TimerCount == 0 && DelegateCount == 0;
 
-		private float time;
+		private float localTime;
 		private float previousTime;
 		private float deltaTime;
 		private uint updateCount;
@@ -65,21 +65,21 @@ namespace ClockKit {
 
 		public void Update(float currentTime) {
 			deltaTime = currentTime - previousTime;
-			time = currentTime;
+			localTime = currentTime;
 			previousTime = currentTime;
 			updateCount++;
 
 			if (!IsEmpty) {
-				CKClockInformation information = new CKClockInformation(
+				CKInstant instant = new CKInstant(
 					queue: Queue,
-					time: time,
+					localTime: localTime,
 					deltaTime: deltaTime,
 					updateCount: updateCount
 				);
 
 				if (updateOrder.Count > 0) {
 					foreach ((_, CKKey key) in updateOrder) {
-						delegates[key](information);
+						delegates[key](instant);
 					}
 				}
 
@@ -87,7 +87,7 @@ namespace ClockKit {
 					CKKey[] timerKeys = timers.Keys.ToArray();
 					foreach (CKKey key in timerKeys) {
 						if (timers.ContainsKey(key)) {
-							bool isComplete = timers[key].OnUpdate(information);
+							bool isComplete = timers[key].OnUpdate(instant);
 							if (isComplete) {
 								StopTimer(key);
 							}
