@@ -6,49 +6,49 @@ using UnityEngine;
 #endif
 
 namespace ClockKit {
-    public struct CKFiniteAnimationUpdatingTimer<Value, Animation> : ICKFiniteTimer where Animation : ICKFiniteAnimation<Value> {
-        public delegate void UpdateCallback(Value value);
-        public delegate void CompletionCallback(Value value);
+	public struct CKFiniteAnimationUpdatingTimer<Value, Animation> : ICKFiniteTimer where Animation : ICKFiniteAnimation<Value> {
+		public delegate void UpdateCallback(Value value);
+		public delegate void CompletionCallback(Value value);
 
-        public float StartTime { get; }
-        public float Duration => animation.Duration;
+		public float StartTime { get; }
+		public float Duration => animation.Duration;
 
-        public readonly Animation animation;
-        public readonly UpdateCallback onUpdate;
-        public readonly CompletionCallback onComplete;
+		public readonly Animation animation;
+		public readonly UpdateCallback onUpdate;
+		public readonly CompletionCallback onComplete;
 
-        public bool IsComplete { get; private set; }
+		public bool IsComplete { get; private set; }
 
-        public CKFiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
+		public CKFiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
 
-        public CKFiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
-            this.StartTime = startTime;
-            this.animation = animation;
-            this.onUpdate = onUpdate;
-            this.onComplete = onComplete;
-            IsComplete = false;
-        }
+		public CKFiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
+			this.StartTime = startTime;
+			this.animation = animation;
+			this.onUpdate = onUpdate;
+			this.onComplete = onComplete;
+			IsComplete = false;
+		}
 
-        public bool OnUpdate(in CKClockInformation information) {
-            if (IsComplete) {
-                return true;
-            }
+		public bool OnUpdate(in CKInstant instant) {
+			if (IsComplete) {
+				return true;
+			}
 
-            float localTime = information.time - StartTime;
+			float localTime = instant.localTime - StartTime;
 #if UNITY_MATHEMATICS
-            float percent = math.saturate(localTime / Duration);
+			float percent = math.saturate(localTime / Duration);
 #else
             float percent = Mathf.Clamp(percent, 0f, 1f);
 #endif
-            Value value = animation.Evaluate(localTime, percent);
+			Value value = animation.Evaluate(localTime, percent);
 
-            onUpdate(value);
+			onUpdate(value);
 
-            IsComplete = percent >= 1;
-            if (IsComplete) {
-                onComplete?.Invoke(value);
-            }
-            return IsComplete;
-        }
-    }
+			IsComplete = percent >= 1;
+			if (IsComplete) {
+				onComplete?.Invoke(value);
+			}
+			return IsComplete;
+		}
+	}
 }

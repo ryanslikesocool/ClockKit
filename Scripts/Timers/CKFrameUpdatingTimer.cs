@@ -1,30 +1,36 @@
 using System;
 
 namespace ClockKit {
-	public struct CKFiniteUpdatingTimer : ICKFiniteTimer {
+	public struct CKFrameUpdatingTimer : ICKTimer {
 		public delegate void UpdateCallback(in CKInstant instant);
-		public delegate void CompletionCallback();
+		public delegate void CompletionCallback(in CKInstant instant);
+		public delegate void SimpleCompletionCallback();
 
 		public float StartTime { get; }
-		public float Duration { get; }
+		public int Counter { get; private set; }
 
 		public readonly UpdateCallback onUpdate;
 		public readonly CompletionCallback onComplete;
 
 		public bool IsComplete { get; private set; }
 
-		public CKFiniteUpdatingTimer(float startTime, float seconds, UpdateCallback onUpdate, CompletionCallback onComplete = null) {
+		public CKFrameUpdatingTimer(float startTime, int frames, UpdateCallback onUpdate, CompletionCallback onComplete = null) {
 			this.StartTime = startTime;
-			this.Duration = seconds;
+			this.Counter = frames;
 			this.onUpdate = onUpdate;
 			this.onComplete = onComplete;
 			this.IsComplete = false;
 		}
 
+		public CKFrameUpdatingTimer(float startTime, int frames, UpdateCallback onUpdate, SimpleCompletionCallback onComplete)
+			: this(startTime, frames, onUpdate, (in CKInstant _) => onComplete()) { }
+
 		public bool OnUpdate(in CKInstant instant) {
 			if (IsComplete) {
 				return true;
 			}
+
+			Counter -= 1;
 
 			float localTime = instant.localTime - StartTime;
 
@@ -34,11 +40,12 @@ namespace ClockKit {
 				instant.deltaTime,
 				instant.updateCount
 			);
-			onUpdate?.Invoke(timerInstant);
 
-			IsComplete = localTime >= Duration;
+			onUpdate(timerInstant);
+
+			IsComplete = Counter <= 0;
 			if (IsComplete) {
-				onComplete?.Invoke();
+				onComplete?.Invoke(timerInstant);
 			}
 			return IsComplete;
 		}

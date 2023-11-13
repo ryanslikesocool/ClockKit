@@ -1,19 +1,22 @@
 using System;
 
 namespace ClockKit {
-	public struct CKFiniteDelayingTimer : ICKFiniteTimer {
+	public struct CKFinitePausableDelayingTimer : ICKFiniteTimer {
+		public delegate bool PauseCheck();
 		public delegate void CompletionCallback();
 
-		public float StartTime { get; }
+		public float StartTime { get; private set; }
 		public float Duration { get; }
 
+		public readonly PauseCheck isPaused;
 		public readonly CompletionCallback onComplete;
 
 		public bool IsComplete { get; private set; }
 
-		public CKFiniteDelayingTimer(float startTime, float duration, CompletionCallback onComplete) {
+		public CKFinitePausableDelayingTimer(float startTime, float duration, PauseCheck isPaused, CompletionCallback onComplete) {
 			this.StartTime = startTime;
 			this.Duration = duration;
+			this.isPaused = isPaused;
 			this.onComplete = onComplete;
 			this.IsComplete = false;
 		}
@@ -21,6 +24,11 @@ namespace ClockKit {
 		public bool OnUpdate(in CKInstant instant) {
 			if (IsComplete) {
 				return true;
+			}
+
+			if (isPaused()) {
+				StartTime += instant.deltaTime;
+				return false;
 			}
 
 			float localTime = instant.localTime - StartTime;
