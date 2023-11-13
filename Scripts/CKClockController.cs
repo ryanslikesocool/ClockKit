@@ -25,6 +25,9 @@ namespace ClockKit {
 		}
 
 		protected override void OnApplicationQuit() {
+			CKClock.RemoveAllDelegates();
+			CKClock.StopAllTimers();
+
 			base.OnApplicationQuit();
 			Destroy(gameObject);
 		}
