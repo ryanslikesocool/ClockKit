@@ -25,21 +25,11 @@ The static `CKClock` class provides access to most functionality, including:
 Three `CKQueue`s are provided by default, each associated with a Unity-provided update loop.
 The Update queue is used by default unless otherwise specified.
 
-\- __Clock Information__\
-A `CKClockInformation` struct is provided with essential current time information that can be used by both timers and delegates.\
-`CKClockInformation` includes:
+\- __Instant__\
+A `CKInstant` struct is provided with essential current time information that can be used by both timers and delegates.\
+`CKInstant` includes:
 - queue
-- time
-- delta time
-- update count
-
-\- __Timer Information__\
-A `CKTimerInformation` struct is provided with essential current timer information that can be used in timer callbacks.
-`CKTimerInformation` can be created within a timer from `CKClockInformation` and the timer's local time.\
-`CKTimerInformation` includes:
-- queue
-- time
-- local time, relative to the start of the timer
+- local time
 - delta time
 - update count
 
@@ -81,8 +71,8 @@ The timer interfaces have an `OnUpdate` function.  Return `true` to mark the tim
 // This example creates a timer that stops early if a value is true, or after certain amount of time has passed.
 
 public struct MyCustomTimer: ICKFixedDurationTimer {
-    public delegate bool CompletionPredicate(in CKTimerInformation information);
-    public delegate void CompletionCallback(in CKTimerInformation information);
+    public delegate bool CompletionPredicate(in CKInstant instant);
+    public delegate void CompletionCallback(in CKInstant instant);
 
     public float StartTime { get; }
     public float Duration { get; }
@@ -100,7 +90,7 @@ public struct MyCustomTimer: ICKFixedDurationTimer {
         this.IsComplete = false;
     }
 
-    public bool OnUpdate(in CKClockInformation information) {
+    public bool OnUpdate(in CKInstant instant) {
         // Safeguard
         if (IsComplete) {
             return true;
@@ -110,10 +100,15 @@ public struct MyCustomTimer: ICKFixedDurationTimer {
         float localTime = information.time - StartTime;
 
         // Create relevant timer information for the callback
-        CKTimerInformation timerInformation = new CKTimerInformation(information, localTime);
+        CKInstant timerInstant = new CKInstant(
+            instant.queue,
+            localTime,
+            instant.deltaTime,
+            instant.updateCount
+        );
 
         // Invoke the predicate
-        IsComplete = completionPredicate(timerInformation);
+        IsComplete = completionPredicate(timerInstant);
 
         if (IsComplete) {
             Debug.Log("Timer predicate returned true.");
@@ -123,7 +118,7 @@ public struct MyCustomTimer: ICKFixedDurationTimer {
         IsComplete |= localTime >= Duration;
 
         if (IsComplete) {
-            onComplete?.Invoke(timerInformation);
+            onComplete?.Invoke(timerInstant);
         }
         return IsComplete;
     }
@@ -131,7 +126,7 @@ public struct MyCustomTimer: ICKFixedDurationTimer {
 ```
 Custom timers can be started similarly to built-in timers...
 ```cs
-MyCustomTimer.CompletionPredicate completionPredicate = _ => {
+MyCustomTimer.CompletionPredicate completionPredicate = (in CKInstant _) => {
     bool isComplete = SomeFunction();
     return isComplete;
 };
@@ -141,7 +136,7 @@ ICKTimer customTimer = new MyCustomTimer(
     startTime: Time.time,
     maxDuration: 5.0f,
     completionPredicate:
-    onComplete: elapsedTime => { Debug.Log($"Timer is complete after {elapsedTime} seconds"); }
+    onComplete: (in CKInstant instant) => { Debug.Log($"Timer is complete after {instant.localTime} seconds"); }
 );
 
 // Start the timer
