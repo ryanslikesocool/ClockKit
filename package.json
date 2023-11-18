@@ -4,13 +4,13 @@
   "version": "2.3.2",
   "unity": "2021.3",
   "description": "Timer functions + manager for delaying function calls",
-  "documentationUrl": "https://github.com/ryanslikesocool/Timer",
+  "documentationUrl": "https://github.com/ryanslikesocool/ClockKit",
+	"licenseUrl": "https://github.com/ryanslikesocool/ClockKit/blob/main/LICENSE.md",
   "author": {
     "name": "Ryan Boyer",
     "email": "ryanjboyer@gmail.com",
     "url": "http://ryanjboyer.com/"
   },
-  "license": "MIT",
   "type": "library",
   "dependencies": {
     "com.developedwithlove.foundation": "0.1.0-pre.1"
