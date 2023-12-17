@@ -1,18 +1,16 @@
 using System.Collections.Generic;
-using Foundation;
 using UnityEngine;
 
 namespace ClockKit {
-	internal sealed class CKClockController : AutoSingleton<CKClockController> {
+	[Singleton(Persistent = true, Auto = true)]
+	internal sealed partial class CKClockController : MonoBehaviour {
 		// MARK: - Properties
 
 		internal Dictionary<CKQueue, CKUpdateQueue> queues = default;
 
 		// MARK: - Lifecycle
 
-		protected override void Awake() {
-			base.Awake();
-
+		private void Awake() {
 			float time = Time.time;
 			queues = new Dictionary<CKQueue, CKUpdateQueue> {
 				{ CKQueue.Update, new CKUpdateQueue(CKQueue.Update, time) },
@@ -24,12 +22,12 @@ namespace ClockKit {
 			DontDestroyOnLoad(gameObject);
 		}
 
-		protected override void OnApplicationQuit() {
+		private void OnApplicationQuit() {
 			CKClock.RemoveAllDelegates();
 			CKClock.StopAllTimers();
 
-			base.OnApplicationQuit();
-			Destroy(gameObject);
+			DeinitializeSingleton();
+			// Destroy(gameObject); // called by DeinitializeSingleton();
 		}
 
 		// MARK: - Update

@@ -1,11 +1,11 @@
 {
   "name": "com.developedwithlove.clockkit",
   "displayName": "ClockKit",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "unity": "2021.3",
   "description": "Timer functions + manager for delaying function calls",
   "documentationUrl": "https://github.com/ryanslikesocool/ClockKit",
-	"licenseUrl": "https://github.com/ryanslikesocool/ClockKit/blob/main/LICENSE.md",
+  "licenseUrl": "https://github.com/ryanslikesocool/ClockKit/blob/main/LICENSE.md",
   "author": {
     "name": "Ryan Boyer",
     "email": "ryanjboyer@gmail.com",
@@ -13,6 +13,7 @@
   },
   "type": "library",
   "dependencies": {
-    "com.developedwithlove.foundation": "0.1.0-pre.1"
+    "com.developedwithlove.foundation": "0.1.0-pre.1",
+    "com.developedwithlove.foundation.generators": "0.1.0-pre.1"
   }
 }
