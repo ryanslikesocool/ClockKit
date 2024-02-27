@@ -203,7 +203,8 @@ namespace ClockKit {
 		}
 
 		public void StopAllTimers() {
-			foreach (CKKey key in timers.Keys) {
+			CKKey[] timerKeys = timers.Keys.ToArray();
+			foreach (CKKey key in timerKeys) {
 				StopTimer(key);
 			}
 		}
