@@ -11,7 +11,7 @@ namespace ClockKit {
 		public readonly UpdateCallback onUpdate;
 		public readonly CompletionCallback onComplete;
 
-		public bool IsComplete => animation.IsComplete;
+		public readonly bool IsComplete => animation.IsComplete;
 
 		public CKCompletableAnimationUpdatingTimer(float startTime, in Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
 

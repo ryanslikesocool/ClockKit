@@ -12,7 +12,7 @@ namespace ClockKit {
 		public delegate void CompletionCallback(Value value);
 
 		public float StartTime { get; }
-		public float Duration => animation.Duration;
+		public readonly float Duration => animation.Duration;
 
 		public readonly Animation animation;
 		public readonly UpdateCallback onUpdate;

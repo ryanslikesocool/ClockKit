@@ -19,5 +19,7 @@ namespace ClockKit {
 
 		public float Evaluate(float localTime, float percent)
 			=> animationCurve.Evaluate(startTime + localTime);
+
+		public static implicit operator CKAnimationCurveAnimation(in AnimationCurve animationCurve) => new CKAnimationCurveAnimation(animationCurve);
 	}
 }
