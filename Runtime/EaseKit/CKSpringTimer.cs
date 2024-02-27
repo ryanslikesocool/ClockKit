@@ -1,3 +1,5 @@
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 #if EASEKIT_3_1
 using EaseKit;
 

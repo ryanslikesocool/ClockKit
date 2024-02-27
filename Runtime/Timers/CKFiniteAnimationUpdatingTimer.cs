@@ -1,4 +1,5 @@
-using System;
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 #if UNITY_MATHEMATICS
 using Unity.Mathematics;
 #else

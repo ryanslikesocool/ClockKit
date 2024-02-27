@@ -1,4 +1,7 @@
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 using System;
+using System.Collections.Generic;
 
 namespace ClockKit {
 	public struct CKSequenceTimer : ICKTimer {
@@ -6,7 +9,7 @@ namespace ClockKit {
 
 		public float StartTime { get; private set; }
 
-		public readonly Func<ICKTimer>[] timerBuilders;
+		public readonly IList<Func<ICKTimer>> timerBuilders;
 
 		public ICKTimer ActiveTimer { get; private set; }
 		public int ActiveTimerIndex { get; private set; }
@@ -15,7 +18,7 @@ namespace ClockKit {
 
 		public bool IsComplete { get; private set; }
 
-		public CKSequenceTimer(float startTime, Func<ICKTimer>[] timerBuilders, CompletionCallback onComplete) {
+		public CKSequenceTimer(float startTime, IList<Func<ICKTimer>> timerBuilders, CompletionCallback onComplete) {
 			this.StartTime = startTime;
 			this.timerBuilders = timerBuilders;
 			this.onComplete = onComplete;
@@ -32,12 +35,12 @@ namespace ClockKit {
 			bool isCurrentTimerComplete = ActiveTimer.OnUpdate(instant);
 			if (isCurrentTimerComplete) {
 				ActiveTimerIndex++;
-				if (ActiveTimerIndex < timerBuilders.Length) {
+				if (ActiveTimerIndex < timerBuilders.Count) {
 					ActiveTimer = timerBuilders[ActiveTimerIndex]();
 				}
 			}
 
-			IsComplete = isCurrentTimerComplete && ActiveTimerIndex == timerBuilders.Length;
+			IsComplete = isCurrentTimerComplete && ActiveTimerIndex == timerBuilders.Count;
 			if (IsComplete) {
 				onComplete?.Invoke();
 			}

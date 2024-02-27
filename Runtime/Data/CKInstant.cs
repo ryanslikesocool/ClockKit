@@ -1,3 +1,5 @@
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 namespace ClockKit {
 	/// <summary>
 	/// Information about an instant of time.

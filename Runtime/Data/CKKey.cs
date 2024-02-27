@@ -1,3 +1,5 @@
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 using System;
 
 namespace ClockKit {
@@ -10,20 +12,30 @@ namespace ClockKit {
 	/// Once a key has been removed from a queue with the <see cref="CKClock.RemoveDelegate(Queue, in CKKey)"/> and <see cref="CKClock.StopTimer(Queue, in CKKey)"/> functions, it becomes available for reuse by the queue.
 	/// </summary>
 	/// <remarks>
-	/// Two queues may contain the same key.  Always specify a queue in a functoin call when possible.
+	/// Two queues may contain the same key.  Always specify a queue in a function call when possible.
 	/// </remarks>
 	public readonly struct CKKey : IEquatable<CKKey>, IComparable<CKKey> {
-		public readonly UInt32 rawValue;
+		/// <summary>
+		/// The queue this key originated from.
+		/// </summary>
+		public readonly CKQueue queue;
 
-		public CKKey(in UInt32 rawValue) {
+		/// <summary>
+		/// The type of object this key is associated with.
+		/// </summary>.
+		public readonly CKKeyAssociation association;
+
+		internal readonly uint rawValue;
+
+		internal CKKey(CKQueue queue, CKKeyAssociation keyAssociation, uint rawValue) {
+			this.queue = queue;
+			this.association = keyAssociation;
 			this.rawValue = rawValue;
 		}
 
-		internal static readonly CKKey zero = new CKKey(0);
-
 		// MARK: - Interface
 
-		public bool Equals(CKKey other) => rawValue == other.rawValue;
+		public bool Equals(CKKey other) => queue == other.queue && association == other.association && rawValue == other.rawValue;
 
 		public int CompareTo(CKKey other) => rawValue.CompareTo(other.rawValue);
 
@@ -33,7 +45,7 @@ namespace ClockKit {
 
 		public static bool operator !=(CKKey lhs, CKKey rhs) => lhs.rawValue != rhs.rawValue;
 
-		public static CKKey operator +(CKKey lhs, UInt32 rhs) => new CKKey(lhs.rawValue + rhs);
+		public static CKKey operator +(CKKey lhs, uint rhs) => new CKKey(lhs.queue, lhs.association, lhs.rawValue + rhs);
 
 		// MARK: - Required
 

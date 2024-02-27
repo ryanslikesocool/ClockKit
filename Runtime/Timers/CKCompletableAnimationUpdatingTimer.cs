@@ -1,3 +1,5 @@
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 namespace ClockKit {
 	public struct CKCompletableAnimationUpdatingTimer<Value, Animation> : ICKTimer where Animation : ICKCompletableAnimation<Value> {
 		public delegate void UpdateCallback(Value value);

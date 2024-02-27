@@ -1,4 +1,4 @@
-using System;
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
 
 namespace ClockKit {
 	public struct CKFinitePausableDelayingTimer : ICKFiniteTimer {

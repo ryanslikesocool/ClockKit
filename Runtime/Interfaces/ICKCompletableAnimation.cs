@@ -1,10 +1,12 @@
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 namespace ClockKit {
-    /// <summary>
-    /// Refines <see cref="ICKAnimation"/> for potentially indefinite animations that must provide completion implementation.
-    /// </summary>
-    /// <typeparam name="Value">The type of value to animate.</typeparam>
-    /// <seealso cref="ICKAnimation"/>
-    public interface ICKCompletableAnimation<Value> : ICKAnimation<Value> {
-        bool IsComplete { get; }
-    }
+	/// <summary>
+	/// Refines <see cref="ICKAnimation"/> for potentially indefinite animations that must provide completion implementation.
+	/// </summary>
+	/// <typeparam name="Value">The type of value to animate.</typeparam>
+	/// <seealso cref="ICKAnimation"/>
+	public interface ICKCompletableAnimation<Value> : ICKAnimation<Value> {
+		bool IsComplete { get; }
+	}
 }

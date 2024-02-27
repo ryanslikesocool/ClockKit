@@ -1,3 +1,5 @@
+// Developed With Love by Ryan Boyer https://ryanjboyer.com <3
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +25,7 @@ namespace ClockKit {
 		}
 
 		private void OnApplicationQuit() {
-			CKClock.RemoveAllDelegates();
+			CKClock.RemoveAllUpdateDelegates();
 			CKClock.StopAllTimers();
 
 			DeinitializeSingleton();
