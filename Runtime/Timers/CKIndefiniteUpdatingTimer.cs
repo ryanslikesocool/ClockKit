@@ -2,27 +2,50 @@
 
 namespace ClockKit {
 	public struct CKIndefiniteUpdatingTimer : ICKTimer {
-		public delegate void UpdateCallback(in CKInstant instant);
-		public delegate void CompletionCallback(in CKInstant instant);
 		public delegate bool CompletionPredicate(in CKInstant instant);
+		public delegate bool SimpleCompletionPredicate();
+
+		public delegate void UpdateCallback(in CKInstant instant);
+
+		public delegate void CompletionCallback(in CKInstant instant);
+		public delegate void SimpleCompletionCallback();
 
 		public float StartTime { get; }
 
+		public readonly CompletionPredicate completionPredicate;
 		public readonly UpdateCallback onUpdate;
 		public readonly CompletionCallback onComplete;
-		public readonly CompletionPredicate completionPredicate;
 
 		public bool IsComplete { get; private set; }
 
-		public CKIndefiniteUpdatingTimer(float startTime, UpdateCallback onUpdate, CompletionPredicate completionPredicate) : this(startTime, onUpdate, null, completionPredicate) { }
-
-		public CKIndefiniteUpdatingTimer(float startTime, UpdateCallback onUpdate, CompletionCallback onComplete, CompletionPredicate completionPredicate) {
+		public CKIndefiniteUpdatingTimer(float startTime, CompletionPredicate completionPredicate, UpdateCallback onUpdate, CompletionCallback onComplete) {
 			this.StartTime = startTime;
+			this.completionPredicate = completionPredicate;
 			this.onUpdate = onUpdate;
 			this.onComplete = onComplete;
-			this.completionPredicate = completionPredicate;
 			IsComplete = false;
 		}
+
+		public CKIndefiniteUpdatingTimer(float startTime, SimpleCompletionPredicate completionPredicate, UpdateCallback onUpdate, CompletionCallback onComplete) : this(
+			startTime: startTime,
+			completionPredicate: (in CKInstant _) => completionPredicate(),
+			onUpdate: onUpdate,
+			onComplete: onComplete
+		) { }
+
+		public CKIndefiniteUpdatingTimer(float startTime, CompletionPredicate completionPredicate, UpdateCallback onUpdate, SimpleCompletionCallback onComplete) : this(
+			startTime: startTime,
+			completionPredicate: completionPredicate,
+			onUpdate: onUpdate,
+			onComplete: (in CKInstant _) => onComplete?.Invoke()
+		) { }
+
+		public CKIndefiniteUpdatingTimer(float startTime, SimpleCompletionPredicate completionPredicate, UpdateCallback onUpdate, SimpleCompletionCallback onComplete) : this(
+			startTime: startTime,
+			completionPredicate: (in CKInstant _) => completionPredicate(),
+			onUpdate: onUpdate,
+			onComplete: (in CKInstant _) => onComplete?.Invoke()
+		) { }
 
 		public bool OnUpdate(in CKInstant instant) {
 			if (IsComplete) {

@@ -10,6 +10,7 @@ namespace ClockKit {
 	public struct CKFiniteAnimationUpdatingTimer<Value, Animation> : ICKFiniteTimer where Animation : ICKFiniteAnimation<Value> {
 		public delegate void UpdateCallback(Value value);
 		public delegate void CompletionCallback(Value value);
+		public delegate void SimpleCompletionCallback();
 
 		public float StartTime { get; }
 		public readonly float Duration => animation.Duration;
@@ -20,8 +21,6 @@ namespace ClockKit {
 
 		public bool IsComplete { get; private set; }
 
-		public CKFiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate) : this(startTime, animation, onUpdate, null) { }
-
 		public CKFiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate, CompletionCallback onComplete) {
 			this.StartTime = startTime;
 			this.animation = animation;
@@ -29,6 +28,13 @@ namespace ClockKit {
 			this.onComplete = onComplete;
 			IsComplete = false;
 		}
+
+		public CKFiniteAnimationUpdatingTimer(float startTime, Animation animation, UpdateCallback onUpdate, SimpleCompletionCallback onComplete) : this(
+			startTime: startTime,
+			animation: animation,
+			onUpdate: onUpdate,
+			onComplete: (Value _) => onComplete?.Invoke()
+		) { }
 
 		public bool OnUpdate(in CKInstant instant) {
 			if (IsComplete) {
