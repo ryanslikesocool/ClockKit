@@ -40,7 +40,7 @@ namespace ClockKit {
 			in Value start,
 			in Value end,
 			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.UpdateCallback onUpdate,
-			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete = null
+			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete
 		) {
 			CKEasingAnimation<Value> animation = new CKEasingAnimation<Value>(
 				interpolator: interpolator,
@@ -85,7 +85,7 @@ namespace ClockKit {
 			in Value start,
 			in Value end,
 			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.UpdateCallback onUpdate,
-			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete = null
+			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete
 		)
 			=> Ease(
 				CKQueue.Default,
@@ -125,7 +125,7 @@ namespace ClockKit {
 			in Value start,
 			in Value end,
 			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.UpdateCallback onUpdate,
-			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete = null
+			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete
 		)
 			=> Ease(
 				queue,
@@ -163,7 +163,7 @@ namespace ClockKit {
 			in Value start,
 			in Value end,
 			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.UpdateCallback onUpdate,
-			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete = null
+			in CKFiniteAnimationUpdatingTimer<Value, ICKFiniteAnimation<Value>>.SimpleCompletionCallback onComplete
 		)
 			=> Ease(
 				CKQueue.Default,
